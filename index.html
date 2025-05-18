@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos Numéricos con R - Dr. Víctor Cruz</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-bg: #f9f9f9;
+            --dark-bg: #2c3e50;
+            --text-color: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+        }
+
+        header {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .instructor {
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+
+        nav {
+            background-color: var(--primary-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light-text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .course-description {
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .session-container {
+            margin-bottom: 3rem;
+        }
+
+        .session-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background-color: var(--light-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .session-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .session-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .session-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+        }
+
+        .session-content {
+            padding: 1.5rem;
+        }
+
+        .session-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .session-description {
+            margin-bottom: 1rem;
+        }
+
+        .resources {
+            margin-top: 1rem;
+        }
+
+        .resource-link {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .resource-link:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 2rem;
+            width: 80%;
+            max-width: 900px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-iframe-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+
+        .modal-iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--light-text);
+            margin: 0 1rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .progress-container {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary-color);
+            width: 0;
+            transition: width 0.5s;
+        }
+
+        .code-container {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                display: none;
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .sessions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Métodos Numéricos con R</h1>
+            <p class="subtitle">Un curso completo para aprender a implementar métodos numéricos utilizando R</p>
+            <p class="instructor">Dr. Víctor Cruz</p>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-content">
+            <button class="nav-toggle" id="navToggle">☰</button>
+            <div class="nav-links" id="navLinks">
+                <a href="#descripcion">Descripción</a>
+                <a href="#progreso">Mi Progreso</a>
+                <a href="#sesiones">Sesiones</a>
+                <a href="#recursos">Recursos</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="descripcion" class="course-description">
+            <h2>Descripción del Curso</h2>
+            <p>Bienvenidos al curso de <strong>Métodos Numéricos con R</strong>. En este curso, exploraremos los fundamentos y aplicaciones de los métodos numéricos utilizando el lenguaje de programación R. A lo largo de 30 sesiones, aprenderemos a programar diferentes algoritmos y técnicas numéricas que son esenciales para resolver problemas en ingeniería, ciencias y matemáticas.</p>
+            <p>El curso está diseñado para proporcionar tanto el fundamento teórico como la implementación práctica de cada método. Cada sesión incluye material teórico, ejemplos prácticos y código en R que podrás ejecutar y modificar para reforzar tu aprendizaje.</p>
+        </section>
+
+        <section id="progreso" class="progress-container">
+            <h2>Mi Progreso</h2>
+            <p>Seguimiento de tu avance en el curso:</p>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="progressText">0 de 30 sesiones completadas (0%)</p>
+        </section>
+
+        <section id="sesiones" class="session-container">
+            <h2>Sesiones del Curso</h2>
+            
+            <div class="session-filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="fundamentals">Fundamentos</button>
+                <button class="filter-btn" data-filter="equations">Ecuaciones</button>
+                <button class="filter-btn" data-filter="interpolation">Interpolación</button>
+                <button class="filter-btn" data-filter="integration">Integración</button>
+                <button class="filter-btn" data-filter="differential">Ec. Diferenciales</button>
+            </div>
+            
+            <div class="sessions-grid" id="sessionsGrid">
+                <!-- Las sesiones se generarán dinámicamente con JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 Dr. Víctor Cruz - Todos los derechos reservados</p>
+            <div class="footer-links">
+                <a href="#">Contacto</a>
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Términos de Uso</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para mostrar los videos y código en pantalla completa -->
+    <div id="contentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de las sesiones del curso
+        const sessionData = [
+            {
+                id: 1,
+                title: "Introducción a los Métodos Numéricos y R",
+                description: "Fundamentos de los métodos numéricos y una introducción al lenguaje de programación R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "fundamentals",
+                resources: [
+                    { name: "Código", type: "code", content: `# Introducción a R
+# Este es un ejemplo básico de código en R
+
+# Asignación de variables
+x <- 10
+y <- 20
+
+# Operaciones básicas
+suma <- x + y
+producto <- x * y
+
+# Impresión de resultados
+print(paste("La suma de", x, "y", y, "es:", suma))
+print(paste("El producto de", x, "y", y, "es:", producto))
+
+# Creación de vectores
+vector1 <- c(1, 2, 3, 4, 5)
+vector2 <- seq(from = 0, to = 10, by = 2)
+
+# Operaciones con vectores
+vector_suma <- vector1 + 10
+vector_producto <- vector1 * 2
+
+# Estadísticas básicas
+media <- mean(vector1)
+maximo <- max(vector1)
+minimo <- min(vector1)
+
+print(paste("Media del vector:", media))
+print(paste("Valor máximo:", maximo))
+print(paste("Valor mínimo:", minimo))` },
+                    { name: "Presentación", type: "link", url: "#" },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 2,
+                title: "Errores en Computación Numérica",
+                description: "Análisis de tipos de errores y su propagación en cálculos numéricos.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "fundamentals",
+                resources: [
+                    { name: "Código", type: "code", content: `# Análisis de errores numéricos en R
+
+# Función para calcular error absoluto
+error_absoluto <- function(valor_exacto, valor_aproximado) {
+  return(abs(valor_exacto - valor_aproximado))
+}
+
+# Función para calcular error relativo
+error_relativo <- function(valor_exacto, valor_aproximado) {
+  return(abs((valor_exacto - valor_aproximado) / valor_exacto))
+}
+
+# Ejemplo: Cálculo de pi
+pi_exacto <- pi
+pi_aproximado <- 22/7
+
+# Errores
+e_abs <- error_absoluto(pi_exacto, pi_aproximado)
+e_rel <- error_relativo(pi_exacto, pi_aproximado)
+
+cat("Valor exacto de pi:", pi_exacto, "\n")
+cat("Valor aproximado de pi:", pi_aproximado, "\n")
+cat("Error absoluto:", e_abs, "\n")
+cat("Error relativo:", e_rel, "\n")
+cat("Error relativo porcentual:", e_rel * 100, "%\n")
+
+# Ejemplo de error de redondeo
+x <- 1.0
+for (i in 1:10) {
+  x <- x + 0.1
+}
+cat("1.0 + 0.1 * 10 =", x, "\n")
+cat("¿Es igual a 2.0?", x == 2.0, "\n")
+cat("Diferencia:", abs(x - 2.0), "\n")
+
+# Precisión de la máquina (epsilon)
+epsilon <- .Machine$double.eps
+cat("Épsilon de la máquina:", epsilon, "\n")` },
+                    { name: "Presentación", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 3,
+                title: "Solución de Ecuaciones No Lineales: Método de Bisección",
+                description: "Implementación del método de bisección para encontrar raíces de funciones.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "equations",
+                resources: [
+                    { name: "Código", type: "code", content: `# Método de Bisección en R
+
+# Definimos la función para la cual queremos encontrar raíces
+f <- function(x) {
+  return(x^3 - 6*x^2 + 11*x - 6)
+}
+
+# Implementación del método de bisección
+biseccion <- function(f, a, b, tol = 1e-6, max_iter = 100) {
+  # Verificamos que f(a) y f(b) tengan signos opuestos
+  if (f(a) * f(b) >= 0) {
+    stop("La función debe tener signos opuestos en los extremos del intervalo.")
+  }
+  
+  # Iniciamos el contador de iteraciones
+  iter <- 0
+  
+  # Guardamos los resultados para graficar después
+  resultados <- data.frame(
+    iteracion = integer(),
+    a = numeric(),
+    b = numeric(),
+    c = numeric(),
+    f_c = numeric(),
+    error = numeric()
+  )
+  
+  # Iteramos hasta alcanzar la tolerancia o el máximo de iteraciones
+  while ((b - a) / 2 > tol && iter < max_iter) {
+    # Incrementamos el contador
+    iter <- iter + 1
+    
+    # Calculamos el punto medio
+    c <- (a + b) / 2
+    
+    # Evaluamos la función en el punto medio
+    f_c <- f(c)
+    
+    # Calculamos el error aproximado
+    error <- (b - a) / 2
+    
+    # Guardamos los resultados
+    resultados[iter, ] <- c(iter, a, b, c, f_c, error)
+    
+    # Actualizamos el intervalo
+    if (f_c == 0) {
+      # Encontramos la raíz exacta
+      break
+    } else if (f(a) * f_c < 0) {
+      # La raíz está en [a, c]
+      b <- c
+    } else {
+      # La raíz está en [c, b]
+      a <- c
+    }
+  }
+  
+  # Retornamos el resultado final y los resultados de cada iteración
+  return(list(
+    raiz = c,
+    f_raiz = f(c),
+    iteraciones = iter,
+    error = (b - a) / 2,
+    convergencia = iter < max_iter,
+    tabla = resultados
+  ))
+}
+
+# Ejemplo de uso
+resultado <- biseccion(f, 0, 1)
+print(resultado$raiz)
+print(resultado$iteraciones)
+
+# Visualización de la función y la raíz encontrada
+library(ggplot2)
+
+# Crear datos para graficar la función
+x_vals <- seq(0, 1, length.out = 1000)
+y_vals <- sapply(x_vals, f)
+datos <- data.frame(x = x_vals, y = y_vals)
+
+# Gráfico
+ggplot(datos, aes(x, y)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = resultado$raiz, linetype = "dashed", color = "blue") +
+  geom_point(aes(x = resultado$raiz, y = 0), color = "green", size = 3) +
+  labs(title = "Método de Bisección",
+       subtitle = paste("Raíz encontrada:", round(resultado$raiz, 6)),
+       x = "x", y = "f(x)") +
+  theme_minimal()` },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 4,
+                title: "Solución de Ecuaciones No Lineales: Método de Newton-Raphson",
+                description: "Implementación del método de Newton-Raphson para encontrar raíces de funciones.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "equations",
+                resources: [
+                    { name: "Código", type: "code", content: `# Método de Newton-Raphson en R
+
+# Definimos la función y su derivada
+f <- function(x) {
+  return(x^3 - 6*x^2 + 11*x - 6)
+}
+
+df <- function(x) {
+  return(3*x^2 - 12*x + 11)
+}
+
+# Implementación del método de Newton-Raphson
+newton_raphson <- function(f, df, x0, tol = 1e-6, max_iter = 100) {
+  # Inicializamos variables
+  x <- x0
+  iter <- 0
+  error <- tol + 1  # Para asegurar que entre en el bucle
+  
+  # Guardamos los resultados para graficar después
+  resultados <- data.frame(
+    iteracion = integer(),
+    x = numeric(),
+    f_x = numeric(),
+    df_x = numeric(),
+    error = numeric()
+  )
+  
+  # Iteramos hasta alcanzar la tolerancia o el máximo de iteraciones
+  while (error > tol && iter < max_iter) {
+    # Incrementamos el contador
+    iter <- iter + 1
+    
+    # Evaluamos la función y su derivada
+    f_x <- f(x)
+    df_x <- df(x)
+    
+    # Verificamos que la derivada no sea cero
+    if (abs(df_x) < 1e-10) {
+      stop("La derivada es casi cero. No se puede continuar.")
+    }
+    
+    # Calculamos el nuevo valor de x
+    x_new <- x - f_x / df_x
+    
+    # Calculamos el error aproximado
+    error <- abs(x_new - x)
+    
+    # Guardamos los resultados
+    resultados[iter, ] <- c(iter, x, f_x, df_x, error)
+    
+    # Actualizamos x
+    x <- x_new
+  }
+  
+  # Retornamos el resultado final y los resultados de cada iteración
+  return(list(
+    raiz = x,
+    f_raiz = f(x),
+    iteraciones = iter,
+    error = error,
+    convergencia = iter < max_iter,
+    tabla = resultados
+  ))
+}
+
+# Ejemplo de uso
+resultado <- newton_raphson(f, df, 3.5)
+print(resultado$raiz)
+print(resultado$iteraciones)
+
+# Visualización de la función, la raíz encontrada y las aproximaciones
+library(ggplot2)
+
+# Crear datos para graficar la función
+x_vals <- seq(2.5, 3.5, length.out = 1000)
+y_vals <- sapply(x_vals, f)
+datos <- data.frame(x = x_vals, y = y_vals)
+
+# Gráfico de la función
+p1 <- ggplot(datos, aes(x, y)) +
+  geom_line() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = resultado$raiz, linetype = "dashed", color = "blue") +
+  geom_point(aes(x = resultado$raiz, y = 0), color = "green", size = 3) +
+  labs(title = "Método de Newton-Raphson",
+       subtitle = paste("Raíz encontrada:", round(resultado$raiz, 6)),
+       x = "x", y = "f(x)") +
+  theme_minimal()
+
+# Gráfico de las aproximaciones
+p2 <- ggplot(resultado$tabla, aes(x = iteracion, y = x)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = resultado$raiz, linetype = "dashed", color = "blue") +
+  labs(title = "Convergencia del Método de Newton-Raphson",
+       x = "Iteración", y = "Aproximación de la raíz") +
+  theme_minimal()
+
+# Mostrar gráficos
+print(p1)
+print(p2)` },
+                    { name: "Presentación", type: "link", url: "#" },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 5,
+                title: "Interpolación Polinomial de Lagrange",
+                description: "Implementación de la interpolación polinomial de Lagrange en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "interpolation",
+                resources: [
+                    { name: "Código", type: "code", content: `# Interpolación de Lagrange en R
+
+# Función para calcular el polinomio de Lagrange
+interpolacion_lagrange <- function(x_data, y_data, x_eval) {
+  n <- length(x_data)
+  
+  if (length(y_data) != n) {
+    stop("Los vectores x_data y y_data deben tener la misma longitud.")
+  }
+  
+  # Función para calcular el término base de Lagrange Li(x)
+  L_i <- function(i, x) {
+    producto <- 1
+    for (j in 1:n) {
+      if (j != i) {
+        producto <- producto * (x - x_data[j]) / (x_data[i] - x_data[j])
+      }
+    }
+    return(producto)
+  }
+  
+  # Función para evaluar el polinomio de Lagrange en un punto x
+  P_n <- function(x) {
+    suma <- 0
+    for (i in 1:n) {
+      suma <- suma + y_data[i] * L_i(i, x)
+    }
+    return(suma)
+  }
+  
+  # Evaluamos la función en los puntos dados
+  if (length(x_eval) > 1) {
+    resultado <- sapply(x_eval, P_n)
+  } else {
+    resultado <- P_n(x_eval)
+  }
+  
+  return(resultado)
+}
+
+# Ejemplo: Interpolación de la función sin(x)
+x_data <- c(0, pi/6, pi/4, pi/3, pi/2)
+y_data <- sin(x_data)
+
+# Puntos para graficar el polinomio interpolado
+x_eval <- seq(0, pi/2, length.out = 100)
+y_interpolado <- interpolacion_lagrange(x_data, y_data, x_eval)
+y_real <- sin(x_eval)
+
+# Calculamos el error
+error <- abs(y_interpolado - y_real)
+
+# Visualización
+library(ggplot2)
+
+# Datos para graficar
+datos <- data.frame(
+  x = x_eval,
+  y_interpolado = y_interpolado,
+  y_real = y_real,
+  error = error
+)
+
+# Datos de los puntos originales
+puntos <- data.frame(
+  x = x_data,
+  y = y_data
+)
+
+# Gráfico del polinomio interpolado vs función real
+p1 <- ggplot() +
+  geom_line(data = datos, aes(x, y_interpolado, color = "Interpolación")) +
+  geom_line(data = datos, aes(x, y_real, color = "Función Real"), linetype = "dashed") +
+  geom_point(data = puntos, aes(x, y), size = 3) +
+  labs(title = "Interpolación Polinomial de Lagrange",
+       subtitle = "sin(x) en [0, π/2]",
+       x = "x", y = "y",
+       color = "Leyenda") +
+  scale_color_manual(values = c("Interpolación" = "blue", "Función Real" = "red")) +
+  theme_minimal()
+
+# Gráfico del error
+p2 <- ggplot(datos, aes(x, error)) +
+  geom_line(color = "purple") +
+  labs(title = "Error de Interpolación",
+       x = "x", y = "Error absoluto") +
+  theme_minimal()
+
+# Mostrar gráficos
+print(p1)
+print(p2)` },
+                    { name: "Presentación", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 6,
+                title: "Interpolación con Splines Cúbicos",
+                description: "Implementación de splines cúbicos para interpolación en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "interpolation",
+                resources: [
+                    { name: "Código", type: "code", content: `# Interpolación con Splines Cúbicos en R
+
+# Cargar paquetes necesarios
+library(splines)
+
+# Generamos datos de ejemplo
+set.seed(123)
+x <- sort(runif(10, 0, 10))
+y <- sin(x) + rnorm(length(x), 0, 0.1)  # Seno con algo de ruido
+
+# Ajustamos un spline cúbico natural
+spline_natural <- smooth.spline(x, y, df = length(x))
+
+# Para comparación, ajustamos también un spline cúbico no natural
+x_fine <- seq(min(x), max(x), length.out = 200)
+spline_no_natural <- spline(x, y, xout = x_fine)
+
+# Y también una interpolación lineal
+interp_lineal <- approx(x, y, xout = x_fine)
+
+# Visualizamos los resultados
+library(ggplot2)
+
+# Datos originales
+datos_originales <- data.frame(x = x, y = y)
+
+# Datos de los splines
+datos_spline_natural <- data.frame(
+  x = spline_natural$x,
+  y = spline_natural$y,
+  tipo = "Spline Cúbico Natural"
+)
+
+datos_spline_no_natural <- data.frame(
+  x = spline_no_natural$x,
+  y = spline_no_natural$y,
+  tipo = "Spline Cúbico No Natural"
+)
+
+datos_interp_lineal <- data.frame(
+  x = interp_lineal$x,
+  y = interp_lineal$y,
+  tipo = "Interpolación Lineal"
+)
+
+# Combinamos los datos para graficar
+datos_interpolacion <- rbind(
+  datos_spline_natural,
+  datos_spline_no_natural,
+  datos_interp_lineal
+)
+
+# Graficamos
+ggplot() +
+  geom_point(data = datos_originales, aes(x, y), size = 3) +
+  geom_line(data = datos_interpolacion, aes(x, y, color = tipo, linetype = tipo)) +
+  scale_color_manual(values = c(
+    "Spline Cúbico Natural" = "blue",
+    "Spline Cúbico No Natural" = "red",
+    "Interpolación Lineal" = "green"
+  )) +
+  scale_linetype_manual(values = c(
+    "Spline Cúbico Natural" = "solid",
+    "Spline Cúbico No Natural" = "dashed",
+    "Interpolación Lineal" = "dotted"
+  )) +
+  labs(title = "Comparación de Métodos de Interpolación",
+       x = "x", y = "y",
+       color = "Método", linetype = "Método") +
+  theme_minimal()
+
+# Ahora implementamos nuestro propio spline cúbico natural
+# (para fines educativos, ya que R tiene funciones incorporadas)
+
+# Función para calcular coeficientes de spline cúbico natural
+spline_cubico_coeficientes <- function(x, y) {
+  n <- length(x) - 1  # Número de intervalos
+  
+  # Calculamos las diferencias
+  h <- diff(x)
+  
+  # Calculamos los valores de b
+  b <- (diff(y) / h)
+  
+  # Construimos la matriz tridiagonal para resolver el sistema
+  A <- matrix(0, n + 1, n + 1)
+  r <- rep(0, n + 1)
+  
+  # Primera y última fila para spline natural (segundas derivadas = 0 en los extremos)
+  A[1, 1] <- 1
+  A[n + 1, n + 1] <- 1
+  
+  # Construimos las filas interiores
+  for (i in 2:n) {
+    A[i, i - 1] <- h[i - 1]
+    A[i, i] <- 2 * (h[i - 1] + h[i])
+    A[i, i + 1] <- h[i]
+    r[i] <- 3 * (b[i] - b[i - 1])
+  }
+  
+  # Resolvemos el sistema para obtener c (segundas derivadas / 2)
+  c <- solve(A, r)
+  
+  # Calculamos los coeficientes a, b, d
+  a <- y[1:n]
+  
+  d <- rep(0, n)
+  for (i in 1:n) {
+    d[i] <- (c[i + 1] - c[i]) / (3 * h[i])
+  }
+  
+  b_new <- rep(0, n)
+  for (i in 1:n) {
+    b_new[i] <- b[i] - h[i] * (2 * c[i] + c[i + 1]) / 3
+  }
+  
+  # Retornamos los coeficientes y los puntos
+  return(list(
+    x = x,
+    a = a,
+    b = b_new,
+    c = c[1:n],
+    d = d,
+    n = n
+  ))
+}
+
+# Función para evaluar el spline en puntos específicos
+evaluar_spline <- function(spline, x_eval) {
+  x <- spline$x
+  a <- spline$a
+  b <- spline$b
+  c <- spline$c
+  d <- spline$d
+  n <- spline$n
+  
+  y_eval <- rep(0, length(x_eval))
+  
+  for (j in 1:length(x_eval)) {
+    # Encontramos el intervalo adecuado
+    i <- 1
+    while (i <= n && x_eval[j] > x[i + 1]) {
+      i <- i + 1
+    }
+    
+    if (i > n) {
+      # Fuera de rango
+      y_eval[j] <- NA
+    } else {
+      # Calculamos la distancia al nodo
+      dx <- x_eval[j] - x[i]
+      
+      # Evaluamos el polinomio
+      y_eval[j] <- a[i] + b[i] * dx + c[i] * dx^2 + d[i] * dx^3
+    }
+  }
+  
+  return(y_eval)
+}
+
+# Ejemplo de uso de nuestras funciones
+coefs <- spline_cubico_coeficientes(x, y)
+y_eval <- evaluar_spline(coefs, x_fine)
+
+# Visualizamos los resultados
+datos_spline_propio <- data.frame(
+  x = x_fine,
+  y = y_eval,
+  tipo = "Spline Cúbico Implementado"
+)
+
+# Añadimos a los datos para graficar
+datos_interpolacion <- rbind(
+  datos_interpolacion,
+  datos_spline_propio
+)
+
+# Graficamos de nuevo
+ggplot() +
+  geom_point(data = datos_originales, aes(x, y), size = 3) +
+  geom_line(data = datos_interpolacion, aes(x, y, color = tipo, linetype = tipo)) +
+  scale_color_manual(values = c(
+    "Spline Cúbico Natural" = "blue",
+    "Spline Cúbico No Natural" = "red",
+    "Interpolación Lineal" = "green",
+    "Spline Cúbico Implementado" = "purple"
+  )) +
+  scale_linetype_manual(values = c(
+    "Spline Cúbico Natural" = "solid",
+    "Spline Cúbico No Natural" = "dashed",
+    "Interpolación Lineal" = "dotted",
+    "Spline Cúbico Implementado" = "longdash"
+  )) +
+  labs(title = "Comparación de Métodos de Interpolación",
+       x = "x", y = "y",
+       color = "Método", linetype = "Método") +
+  theme_minimal()` },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 7,
+                title: "Integración Numérica: Regla del Trapecio",
+                description: "Implementación de la regla del trapecio para integración numérica en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "integration",
+                resources: [
+                    { name: "Código", type: "code", content: `# Integración Numérica: Regla del Trapecio en R
+
+# Definimos la función a integrar
+f <- function(x) {
+  return(sin(x^2))
+}
+
+# Implementación de la regla del trapecio simple
+trapecio_simple <- function(f, a, b) {
+  h <- b - a
+  return(h * (f(a) + f(b)) / 2)
+}
+
+# Implementación de la regla del trapecio compuesta
+trapecio_compuesto <- function(f, a, b, n) {
+  if (n <= 0) {
+    stop("El número de subintervalos debe ser positivo.")
+  }
+  
+  h <- (b - a) / n
+  x <- seq(a, b, by = h)
+  y <- sapply(x, f)
+  
+  # Aplicamos la regla del trapecio
+  suma <- y[1] / 2 + sum(y[2:n]) + y[n + 1] / 2
+  return(h * suma)
+}
+
+# Ejemplo: Integramos sin(x^2) de 0 a pi
+a <- 0
+b <- pi
+
+# Valor de referencia usando la función integrate de R
+valor_referencia <- integrate(f, a, b)$value
+cat("Valor de referencia:", valor_referencia, "\n")
+
+# Usando trapecio simple
+resultado_simple <- trapecio_simple(f, a, b)
+cat("Trapecio simple:", resultado_simple, "\n")
+cat("Error absoluto:", abs(resultado_simple - valor_referencia), "\n")
+
+# Usando trapecio compuesto con diferentes números de intervalos
+n_valores <- c(2, 4, 8, 16, 32, 64, 128, 256)
+resultados <- data.frame(
+  n = n_valores,
+  resultado = numeric(length(n_valores)),
+  error = numeric(length(n_valores))
+)
+
+for (i in 1:length(n_valores)) {
+  n <- n_valores[i]
+  resultados$resultado[i] <- trapecio_compuesto(f, a, b, n)
+  resultados$error[i] <- abs(resultados$resultado[i] - valor_referencia)
+}
+
+# Visualizamos los resultados
+print(resultados)
+
+# Graficamos la convergencia del método
+library(ggplot2)
+
+# Gráfico del error vs. número de intervalos
+p1 <- ggplot(resultados, aes(n, error)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(title = "Convergencia de la Regla del Trapecio",
+       x = "Número de intervalos (escala log)",
+       y = "Error absoluto (escala log)") +
+  theme_minimal()
+
+# Gráfico de la función y las aproximaciones
+x_vals <- seq(a, b, length.out = 1000)
+y_vals <- sapply(x_vals, f)
+
+datos_funcion <- data.frame(x = x_vals, y = y_vals)
+
+# Generamos datos para mostrar la aproximación con trapecio compuesto
+generar_datos_trapecio <- function(n) {
+  h <- (b - a) / n
+  x <- seq(a, b, by = h)
+  y <- sapply(x, f)
+  
+  # Datos para las líneas del trapecio
+  datos <- data.frame()
+  
+  for (i in 1:n) {
+    x1 <- x[i]
+    x2 <- x[i + 1]
+    y1 <- y[i]
+    y2 <- y[i + 1]
+    
+    # Línea recta entre puntos
+    x_linea <- c(x1, x2)
+    y_linea <- c(y1, y2)
+    
+    datos <- rbind(datos, data.frame(x = x_linea, y = y_linea, segmento = i))
+  }
+  
+  return(datos)
+}
+
+# Datos para trapecio con n=8
+datos_trapecio <- generar_datos_trapecio(8)
+
+# Gráfico de la función y la aproximación
+p2 <- ggplot() +
+  geom_line(data = datos_funcion, aes(x, y), color = "blue") +
+  geom_line(data = datos_trapecio, aes(x, y, group = segmento), color = "red") +
+  geom_point(data = data.frame(x = seq(a, b, length.out = 9), 
+                               y = sapply(seq(a, b, length.out = 9), f)),
+             aes(x, y), color = "red", size = 3) +
+  labs(title = "Aproximación con la Regla del Trapecio (n=8)",
+       x = "x", y = "f(x)") +
+  theme_minimal()
+
+# Mostramos los gráficos
+print(p1)
+print(p2)` },
+                    { name: "Presentación", type: "link", url: "#" },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 8,
+                title: "Integración Numérica: Regla de Simpson",
+                description: "Implementación de la regla de Simpson para integración numérica en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "integration",
+                resources: [
+                    { name: "Código", type: "code", content: `# Integración Numérica: Regla de Simpson en R
+
+# Definimos la función a integrar
+f <- function(x) {
+  return(sin(x^2))
+}
+
+# Implementación de la regla de Simpson 1/3 simple
+simpson_simple <- function(f, a, b) {
+  h <- (b - a) / 2
+  x0 <- a
+  x1 <- a + h
+  x2 <- b
+  
+  return(h / 3 * (f(x0) + 4 * f(x1) + f(x2)))
+}
+
+# Implementación de la regla de Simpson 1/3 compuesta
+simpson_compuesto <- function(f, a, b, n) {
+  if (n <= 0 || n %% 2 != 0) {
+    stop("El número de subintervalos debe ser positivo y par.")
+  }
+  
+  h <- (b - a) / n
+  suma <- f(a) + f(b)
+  
+  # Sumamos los términos con coeficiente 4 (índices impares)
+  for (i in seq(1, n-1, by = 2)) {
+    suma <- suma + 4 * f(a + i * h)
+  }
+  
+  # Sumamos los términos con coeficiente 2 (índices pares)
+  for (i in seq(2, n-2, by = 2)) {
+    suma <- suma + 2 * f(a + i * h)
+  }
+  
+  return(h / 3 * suma)
+}
+
+# Ejemplo: Integramos sin(x^2) de 0 a pi
+a <- 0
+b <- pi
+
+# Valor de referencia usando la función integrate de R
+valor_referencia <- integrate(f, a, b)$value
+cat("Valor de referencia:", valor_referencia, "\n")
+
+# Usando Simpson simple
+resultado_simple <- simpson_simple(f, a, b)
+cat("Simpson simple:", resultado_simple, "\n")
+cat("Error absoluto:", abs(resultado_simple - valor_referencia), "\n")
+
+# Usando Simpson compuesto con diferentes números de intervalos
+n_valores <- c(2, 4, 8, 16, 32, 64, 128, 256)
+resultados <- data.frame(
+  n = n_valores,
+  resultado = numeric(length(n_valores)),
+  error = numeric(length(n_valores))
+)
+
+for (i in 1:length(n_valores)) {
+  n <- n_valores[i]
+  resultados$resultado[i] <- simpson_compuesto(f, a, b, n)
+  resultados$error[i] <- abs(resultados$resultado[i] - valor_referencia)
+}
+
+# Visualizamos los resultados
+print(resultados)
+
+# Comparamos con la regla del trapecio
+trapecio_compuesto <- function(f, a, b, n) {
+  h <- (b - a) / n
+  x <- seq(a, b, by = h)
+  y <- sapply(x, f)
+  
+  suma <- y[1] / 2 + sum(y[2:n]) + y[n + 1] / 2
+  return(h * suma)
+}
+
+resultados_trapecio <- data.frame(
+  n = n_valores,
+  resultado = numeric(length(n_valores)),
+  error = numeric(length(n_valores))
+)
+
+for (i in 1:length(n_valores)) {
+  n <- n_valores[i]
+  resultados_trapecio$resultado[i] <- trapecio_compuesto(f, a, b, n)
+  resultados_trapecio$error[i] <- abs(resultados_trapecio$resultado[i] - valor_referencia)
+}
+
+# Graficamos la comparación de la convergencia
+library(ggplot2)
+library(reshape2)
+
+# Preparamos los datos para graficar
+resultados$metodo <- "Simpson"
+resultados_trapecio$metodo <- "Trapecio"
+
+datos_comparacion <- rbind(resultados, resultados_trapecio)
+
+# Gráfico del error vs. número de intervalos
+p1 <- ggplot(datos_comparacion, aes(n, error, color = metodo)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(title = "Comparación de Convergencia",
+       x = "Número de intervalos (escala log)",
+       y = "Error absoluto (escala log)",
+       color = "Método") +
+  theme_minimal()
+
+# Visualización de la aproximación de Simpson
+generar_datos_simpson <- function(n) {
+  h <- (b - a) / n
+  x <- seq(a, b, by = h)
+  y <- sapply(x, f)
+  
+  datos <- data.frame()
+  
+  for (i in seq(1, n, by = 2)) {
+    if (i + 1 <= n) {
+      x0 <- x[i]
+      x1 <- x[i + 1]
+      x2 <- x[i + 2]
+      y0 <- y[i]
+      y1 <- y[i + 1]
+      y2 <- y[i + 2]
+      
+      # Ajustamos una parábola a través de los tres puntos
+      # y = A*x^2 + B*x + C
+      A <- (y0 - 2*y1 + y2) / (2*h^2)
+      B <- (y2 - y0) / (2*h) - A * (x0 + x2)
+      C <- y0 - A*x0^2 - B*x0
+      
+      # Generamos puntos en la parábola
+      x_parabola <- seq(x0, x2, length.out = 50)
+      y_parabola <- A*x_parabola^2 + B*x_parabola + C
+      
+      datos <- rbind(datos, data.frame(x = x_parabola, y = y_parabola, segmento = (i-1)/2 + 1))
+    }
+  }
+  
+  return(datos)
+}
+
+# Datos para Simpson con n=8
+datos_simpson <- generar_datos_simpson(8)
+
+# Datos de la función original
+x_vals <- seq(a, b, length.out = 1000)
+y_vals <- sapply(x_vals, f)
+datos_funcion <- data.frame(x = x_vals, y = y_vals)
+
+# Gráfico de la función y la aproximación
+p2 <- ggplot() +
+  geom_line(data = datos_funcion, aes(x, y), color = "blue") +
+  geom_line(data = datos_simpson, aes(x, y, group = segmento), color = "red") +
+  geom_point(data = data.frame(x = seq(a, b, length.out = 9), 
+                               y = sapply(seq(a, b, length.out = 9), f)),
+             aes(x, y), color = "red", size = 3) +
+  labs(title = "Aproximación con la Regla de Simpson (n=8)",
+       x = "x", y = "f(x)") +
+  theme_minimal()
+
+# Mostramos los gráficos
+print(p1)
+print(p2)` },
+                    { name: "Presentación", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 9,
+                title: "Ecuaciones Diferenciales: Método de Euler",
+                description: "Implementación del método de Euler para resolver ecuaciones diferenciales ordinarias en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "differential",
+                resources: [
+                    { name: "Código", type: "code", content: `# Método de Euler para Ecuaciones Diferenciales Ordinarias en R
+
+# Definimos la ecuación diferencial dy/dx = f(x, y)
+# Ejemplo: dy/dx = -2xy
+f <- function(x, y) {
+  return(-2 * x * y)
+}
+
+# Solución analítica para este ejemplo: y = exp(-x^2)
+solucion_exacta <- function(x) {
+  return(exp(-x^2))
+}
+
+# Implementación del método de Euler
+euler <- function(f, x0, y0, h, n) {
+  # Inicializamos los vectores para almacenar los resultados
+  x <- numeric(n + 1)
+  y <- numeric(n + 1)
+  
+  # Condiciones iniciales
+  x[1] <- x0
+  y[1] <- y0
+  
+  # Iteramos usando el método de Euler
+  for (i in 1:n) {
+    y[i + 1] <- y[i] + h * f(x[i], y[i])
+    x[i + 1] <- x[i] + h
+  }
+  
+  return(data.frame(x = x, y = y))
+}
+
+# Ejemplo de uso
+x0 <- 0      # Valor inicial de x
+y0 <- 1      # Valor inicial de y
+h <- 0.1     # Tamaño del paso
+n <- 100     # Número de pasos
+
+# Aplicamos el método de Euler
+resultado_euler <- euler(f, x0, y0, h, n)
+
+# Calculamos la solución exacta en los mismos puntos
+resultado_euler$y_exacta <- solucion_exacta(resultado_euler$x)
+resultado_euler$error <- abs(resultado_euler$y - resultado_euler$y_exacta)
+
+# Visualizamos los resultados
+library(ggplot2)
+
+# Gráfico de las soluciones
+p1 <- ggplot(resultado_euler, aes(x)) +
+  geom_line(aes(y = y, color = "Euler")) +
+  geom_line(aes(y = y_exacta, color = "Exacta")) +
+  labs(title = "Método de Euler vs Solución Exacta",
+       subtitle = "dy/dx = -2xy, y(0) = 1",
+       x = "x", y = "y", color = "Solución") +
+  scale_color_manual(values = c("Euler" = "red", "Exacta" = "blue")) +
+  theme_minimal()
+
+# Gráfico del error
+p2 <- ggplot(resultado_euler, aes(x, error)) +
+  geom_line(color = "purple") +
+  labs(title = "Error Absoluto del Método de Euler",
+       x = "x", y = "Error absoluto") +
+  theme_minimal()
+
+# Comparación con diferentes tamaños de paso
+h_valores <- c(0.2, 0.1, 0.05, 0.025)
+resultados_comparacion <- data.frame()
+
+for (h in h_valores) {
+  n <- ceiling((max(resultado_euler$x) - x0) / h)
+  res <- euler(f, x0, y0, h, n)
+  res$y_exacta <- solucion_exacta(res$x)
+  res$error <- abs(res$y - res$y_exacta)
+  res$h <- h
+  resultados_comparacion <- rbind(resultados_comparacion, res)
+}
+
+# Gráfico comparativo con diferentes tamaños de paso
+p3 <- ggplot(resultados_comparacion, aes(x, y, color = as.factor(h))) +
+  geom_line() +
+  geom_line(aes(y = y_exacta), color = "black", linetype = "dashed") +
+  labs(title = "Método de Euler con Diferentes Tamaños de Paso",
+       x = "x", y = "y", color = "Tamaño de paso (h)") +
+  theme_minimal()
+
+# Gráfico del error con diferentes tamaños de paso
+p4 <- ggplot(resultados_comparacion, aes(x, error, color = as.factor(h))) +
+  geom_line() +
+  labs(title = "Error Absoluto con Diferentes Tamaños de Paso",
+       x = "x", y = "Error absoluto", color = "Tamaño de paso (h)") +
+  theme_minimal()
+
+# Mostramos los gráficos
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+
+# Análisis de convergencia
+# Calculamos el error máximo para cada tamaño de paso
+error_maximo <- tapply(resultados_comparacion$error, resultados_comparacion$h, max)
+datos_convergencia <- data.frame(
+  h = as.numeric(names(error_maximo)),
+  error_max = as.numeric(error_maximo)
+)
+
+# Gráfico de convergencia
+p5 <- ggplot(datos_convergencia, aes(h, error_max)) +
+  geom_point() +
+  geom_line() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(title = "Análisis de Convergencia del Método de Euler",
+       x = "Tamaño de paso (h) - escala log",
+       y = "Error máximo - escala log") +
+  theme_minimal()
+
+print(p5)` },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            },
+            {
+                id: 10,
+                title: "Ecuaciones Diferenciales: Método de Runge-Kutta",
+                description: "Implementación del método de Runge-Kutta para resolver ecuaciones diferenciales ordinarias en R.",
+                videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                category: "differential",
+                resources: [
+                    { name: "Código", type: "code", content: `# Método de Runge-Kutta para Ecuaciones Diferenciales Ordinarias en R
+
+# Definimos la ecuación diferencial dy/dx = f(x, y)
+# Ejemplo: dy/dx = -2xy
+f <- function(x, y) {
+  return(-2 * x * y)
+}
+
+# Solución analítica para este ejemplo: y = exp(-x^2)
+solucion_exacta <- function(x) {
+  return(exp(-x^2))
+}
+
+# Implementación del método de Runge-Kutta de cuarto orden (RK4)
+runge_kutta4 <- function(f, x0, y0, h, n) {
+  # Inicializamos los vectores para almacenar los resultados
+  x <- numeric(n + 1)
+  y <- numeric(n + 1)
+  
+  # Condiciones iniciales
+  x[1] <- x0
+  y[1] <- y0
+  
+  # Iteramos usando el método de Runge-Kutta de cuarto orden
+  for (i in 1:n) {
+    k1 <- h * f(x[i], y[i])
+    k2 <- h * f(x[i] + h/2, y[i] + k1/2)
+    k3 <- h * f(x[i] + h/2, y[i] + k2/2)
+    k4 <- h * f(x[i] + h, y[i] + k3)
+    
+    y[i + 1] <- y[i] + (k1 + 2*k2 + 2*k3 + k4) / 6
+    x[i + 1] <- x[i] + h
+  }
+  
+  return(data.frame(x = x, y = y))
+}
+
+# Implementación del método de Euler para comparación
+euler <- function(f, x0, y0, h, n) {
+  x <- numeric(n + 1)
+  y <- numeric(n + 1)
+  
+  x[1] <- x0
+  y[1] <- y0
+  
+  for (i in 1:n) {
+    y[i + 1] <- y[i] + h * f(x[i], y[i])
+    x[i + 1] <- x[i] + h
+  }
+  
+  return(data.frame(x = x, y = y))
+}
+
+# Ejemplo de uso
+x0 <- 0      # Valor inicial de x
+y0 <- 1      # Valor inicial de y
+h <- 0.1     # Tamaño del paso
+n <- 100     # Número de pasos
+
+# Aplicamos los métodos
+resultado_rk4 <- runge_kutta4(f, x0, y0, h, n)
+resultado_euler <- euler(f, x0, y0, h, n)
+
+# Calculamos la solución exacta en los mismos puntos
+x_vals <- resultado_rk4$x
+y_exacta <- solucion_exacta(x_vals)
+
+# Calculamos los errores
+resultado_rk4$y_exacta <- y_exacta
+resultado_rk4$error <- abs(resultado_rk4$y - resultado_rk4$y_exacta)
+resultado_rk4$metodo <- "RK4"
+
+resultado_euler$y_exacta <- y_exacta
+resultado_euler$error <- abs(resultado_euler$y - resultado_euler$y_exacta)
+resultado_euler$metodo <- "Euler"
+
+# Combinamos los resultados para graficar
+resultados_combinados <- rbind(resultado_rk4, resultado_euler)
+
+# Visualizamos los resultados
+library(ggplot2)
+
+# Gráfico de las soluciones
+p1 <- ggplot() +
+  geom_line(data = resultado_rk4, aes(x, y_exacta, color = "Exacta")) +
+  geom_line(data = resultado_rk4, aes(x, y, color = "RK4")) +
+  geom_line(data = resultado_euler, aes(x, y, color = "Euler")) +
+  labs(title = "Comparación de Métodos Numéricos",
+       subtitle = "dy/dx = -2xy, y(0) = 1",
+       x = "x", y = "y", color = "Método") +
+  scale_color_manual(values = c("Exacta" = "black", "RK4" = "blue", "Euler" = "red")) +
+  theme_minimal()
+
+# Gráfico de los errores
+p2 <- ggplot(resultados_combinados, aes(x, error, color = metodo)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(title = "Error Absoluto de los Métodos",
+       x = "x", y = "Error absoluto (escala log)", color = "Método") +
+  scale_color_manual(values = c("RK4" = "blue", "Euler" = "red")) +
+  theme_minimal()
+
+# Comparación con diferentes tamaños de paso
+h_valores <- c(0.2, 0.1, 0.05, 0.025)
+resultados_comparacion <- data.frame()
+
+for (h in h_valores) {
+  n <- ceiling((max(x_vals) - x0) / h)
+  
+  # Método RK4
+  res_rk4 <- runge_kutta4(f, x0, y0, h, n)
+  res_rk4$y_exacta <- solucion_exacta(res_rk4$x)
+  res_rk4$error <- abs(res_rk4$y - res_rk4$y_exacta)
+  res_rk4$h <- h
+  res_rk4$metodo <- "RK4"
+  
+  # Método de Euler
+  res_euler <- euler(f, x0, y0, h, n)
+  res_euler$y_exacta <- solucion_exacta(res_euler$x)
+  res_euler$error <- abs(res_euler$y - res_euler$y_exacta)
+  res_euler$h <- h
+  res_euler$metodo <- "Euler"
+  
+  # Combinamos los resultados
+  resultados_comparacion <- rbind(
+    resultados_comparacion,
+    res_rk4,
+    res_euler
+  )
+}
+
+# Análisis de convergencia
+# Calculamos el error máximo para cada tamaño de paso y método
+error_maximo <- aggregate(
+  error ~ h + metodo,
+  data = resultados_comparacion,
+  FUN = max
+)
+
+# Gráfico de convergencia
+p3 <- ggplot(error_maximo, aes(h, error, color = metodo)) +
+  geom_point() +
+  geom_line() +
+  scale_x_log10() +
+  scale_y_log10() +
+  labs(title = "Análisis de Convergencia",
+       x = "Tamaño de paso (h) - escala log",
+       y = "Error máximo - escala log",
+       color = "Método") +
+  scale_color_manual(values = c("RK4" = "blue", "Euler" = "red")) +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+# Aplicación a un sistema de ecuaciones diferenciales
+# Ejemplo: Sistema depredador-presa (Lotka-Volterra)
+#   dx/dt = x(a - by)
+#   dy/dt = y(-c + dx)
+
+lotka_volterra <- function(t, state, parameters) {
+  with(as.list(c(state, parameters)), {
+    dx <- x * (a - b * y)
+    dy <- y * (-c + d * x)
+    return(list(c(dx, dy)))
+  })
+}
+
+# Implementación de RK4 para sistemas
+runge_kutta4_sistema <- function(f, t0, state0, h, n, parameters) {
+  # Inicializamos las matrices para almacenar los resultados
+  t <- numeric(n + 1)
+  state <- matrix(0, nrow = n + 1, ncol = length(state0))
+  
+  # Condiciones iniciales
+  t[1] <- t0
+  state[1, ] <- state0
+  
+  # Iteramos usando el método de Runge-Kutta de cuarto orden
+  for (i in 1:n) {
+    k1 <- h * unlist(f(t[i], state[i, ], parameters))
+    k2 <- h * unlist(f(t[i] + h/2, state[i, ] + k1/2, parameters))
+    k3 <- h * unlist(f(t[i] + h/2, state[i, ] + k2/2, parameters))
+    k4 <- h * unlist(f(t[i] + h, state[i, ] + k3, parameters))
+    
+    state[i + 1, ] <- state[i, ] + (k1 + 2*k2 + 2*k3 + k4) / 6
+    t[i + 1] <- t[i] + h
+  }
+  
+  # Convertimos a data frame para facilitar el manejo
+  resultado <- data.frame(t = t)
+  for (j in 1:length(state0)) {
+    resultado[[paste0("y", j)]] <- state[, j]
+  }
+  
+  return(resultado)
+}
+
+# Ejemplo: Modelo de Lotka-Volterra
+parameters <- c(a = 0.1, b = 0.02, c = 0.2, d = 0.01)
+state0 <- c(x = 10, y = 5)  # Condiciones iniciales (10 presas, 5 depredadores)
+t0 <- 0
+tf <- 200
+h <- 0.1
+n <- (tf - t0) / h
+
+# Resolvemos el sistema
+resultado_lv <- runge_kutta4_sistema(lotka_volterra, t0, state0, h, n, parameters)
+names(resultado_lv) <- c("t", "presas", "depredadores")
+
+# Visualizamos los resultados del modelo Lotka-Volterra
+p4 <- ggplot(resultado_lv, aes(t)) +
+  geom_line(aes(y = presas, color = "Presas")) +
+  geom_line(aes(y = depredadores, color = "Depredadores")) +
+  labs(title = "Modelo Depredador-Presa (Lotka-Volterra)",
+       x = "Tiempo", y = "Población", color = "Especie") +
+  scale_color_manual(values = c("Presas" = "blue", "Depredadores" = "red")) +
+  theme_minimal()
+
+# Retrato de fase
+p5 <- ggplot(resultado_lv, aes(presas, depredadores)) +
+  geom_path(color = "purple") +
+  geom_point(data = resultado_lv[1, ], size = 3, color = "green") +
+  labs(title = "Retrato de Fase del Modelo Lotka-Volterra",
+       x = "Población de Presas", y = "Población de Depredadores") +
+  theme_minimal()
+
+# Mostramos los gráficos
+print(p1)
+print(p2)
+print(p3)
+print(p4)
+print(p5)` },
+                    { name: "Presentación", type: "link", url: "#" },
+                    { name: "Ejercicios", type: "link", url: "#" }
+                ],
+                completed: false
+            }
+        ];
+
+        // Elementos del DOM
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.getElementById('navLinks');
+        const sessionsGrid = document.getElementById('sessionsGrid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const contentModal = document.getElementById('contentModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+
+        // Función para mostrar las sesiones
+        function displaySessions(sessions) {
+            sessionsGrid.innerHTML = '';
+            
+            sessions.forEach(session => {
+                const sessionCard = document.createElement('div');
+                sessionCard.className = 'session-card';
+                sessionCard.dataset.category = session.category;
+                
+                const sessionHTML = `
+                    <div class="session-header">
+                        <h3 class="session-title">Sesión ${session.id}: ${session.title}</h3>
+                    </div>
+                    <div class="session-content">
+                        <div class="video-container">
+                            <iframe src="${session.videoUrl}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <p class="session-description">${session.description}</p>
+                        <div class="resources">
+                            ${session.resources.map(resource => {
+                                if (resource.type === 'code') {
+                                    return `<button class="resource-link code-btn" data-id="${session.id}" data-resource="code">Ver Código</button>`;
+                                } else {
+                                    return `<a href="${resource.url}" class="resource-link" target="_blank">${resource.name}</a>`;
+                                }
+                            }).join('')}
+                        </div>
+                        <div class="session-status">
+                            <label>
+                                <input type="checkbox" class="session-checkbox" data-id="${session.id}" ${session.completed ? 'checked' : ''}>
+                                Completada
+                            </label>
+                        </div>
+                    </div>
+                `;
+                
+                sessionCard.innerHTML = sessionHTML;
+                sessionsGrid.appendChild(sessionCard);
+            });
+            
+            // Añadimos event listeners a los botones de código
+            document.querySelectorAll('.code-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const sessionId = parseInt(this.dataset.id);
+                    const session = sessionData.find(s => s.id === sessionId);
+                    
+                    if (session) {
+                        const codeResource = session.resources.find(r => r.type === 'code');
+                        
+                        if (codeResource) {
+                            modalTitle.textContent = `Código: ${session.title}`;
+                            modalContent.innerHTML = `
+                                <div class="code-container">
+                                    <code>${codeResource.content}</code>
+                                </div>
+                            `;
+                            contentModal.style.display = 'block';
+                        }
+                    }
+                });
+            });
+            
+            // Añadimos event listeners a los checkboxes
+            document.querySelectorAll('.session-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const sessionId = parseInt(this.dataset.id);
+                    const sessionIndex = sessionData.findIndex(s => s.id === sessionId);
+                    
+                    if (sessionIndex !== -1) {
+                        sessionData[sessionIndex].completed = this.checked;
+                        updateProgress();
+                    }
+                });
+            });
+        }
+
+        // Función para filtrar sesiones
+        function filterSessions(category) {
+            if (category === 'all') {
+                displaySessions(sessionData);
+            } else {
+                const filteredSessions = sessionData.filter(session => session.category === category);
+                displaySessions(filteredSessions);
+            }
+        }
+
+        // Función para actualizar la barra de progreso
+        function updateProgress() {
+            const total = sessionData.length;
+            const completed = sessionData.filter(session => session.completed).length;
+            const percentage = (completed / total) * 100;
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${completed} de ${total} sesiones completadas (${Math.round(percentage)}%)`;
+        }
+
+        // Event listeners
+        navToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('show');
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Quita la clase active de todos los botones
+                filterBtns.forEach(b => b.classList.remove('active'));
+                // Añade la clase active al botón clickeado
+                this.classList.add('active');
+                
+                const category = this.dataset.filter;
+                filterSessions(category);
+            });
+        });
+
+        closeModal.addEventListener('click', function() {
+            contentModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === contentModal) {
+                contentModal.style.display = 'none';
+            }
+        });
+
+        // Inicialización
+        displaySessions(sessionData);
+        updateProgress();
+    </script>
+</body>
+</html>
