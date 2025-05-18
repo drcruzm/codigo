@@ -5,6 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Métodos Numéricos con R - Dr. Víctor Cruz</title>
     <style>
+        /* Estilos para la pantalla de login */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            margin-bottom: 1.5rem;
+        }
+
+        .login-title {
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .login-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .login-input {
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .login-button {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #2980b9;
+        }
+
+        .login-error {
+            color: #e74c3c;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .content-container {
+            display: none; /* El contenido está oculto inicialmente */
+        }
+        
         :root {
             --primary-color: #3498db;
             --secondary-color: #2980b9;
@@ -335,11 +413,15 @@
             border-radius: 5px;
             margin: 1rem 0;
             overflow-x: auto;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         code {
             font-family: 'Courier New', Courier, monospace;
             line-height: 1.5;
+            white-space: pre;
+            display: block;
         }
 
         /* Media Queries */
@@ -375,6 +457,24 @@
     </style>
 </head>
 <body>
+    <!-- Pantalla de inicio de sesión -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <img src="/api/placeholder/150/150" alt="Logo del Curso" />
+            </div>
+            <h2 class="login-title">Métodos Numéricos con R</h2>
+            <p class="login-subtitle">Ingrese la contraseña para acceder al curso</p>
+            <div class="login-form">
+                <input type="password" id="passwordInput" class="login-input" placeholder="Contraseña">
+                <button id="loginButton" class="login-button">Acceder al Curso</button>
+            </div>
+            <p id="loginError" class="login-error">Contraseña incorrecta. Por favor intente nuevamente.</p>
+        </div>
+    </div>
+
+    <!-- Contenido del curso (oculto inicialmente) -->
+    <div id="contentContainer">
     <header>
         <div class="header-content">
             <h1>Métodos Numéricos con R</h1>
@@ -450,6 +550,59 @@
     </div>
 
     <script>
+        // Verificación de contraseña
+        const loginScreen = document.getElementById('loginScreen');
+        const contentContainer = document.getElementById('contentContainer');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const loginError = document.getElementById('loginError');
+        
+        // La contraseña correcta
+        const correctPassword = "5678910";
+        
+        // Comprobar si ya ha iniciado sesión
+        function checkSession() {
+            const isLoggedIn = localStorage.getItem('metodos_numericos_logged_in');
+            if (isLoggedIn === 'true') {
+                loginScreen.style.display = 'none';
+                contentContainer.style.display = 'block';
+            }
+        }
+        
+        // Ejecutar al cargar la página
+        checkSession();
+        
+        // Event listener para el botón de login
+        loginButton.addEventListener('click', function() {
+            if (passwordInput.value === correctPassword) {
+                // Contraseña correcta
+                localStorage.setItem('metodos_numericos_logged_in', 'true');
+                loginScreen.style.display = 'none';
+                contentContainer.style.display = 'block';
+                loginError.style.display = 'none';
+            } else {
+                // Contraseña incorrecta
+                loginError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        });
+        
+        // También permitir presionar Enter para enviar
+        passwordInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+        
+        // Función para cerrar sesión (puedes agregar un botón para esto si lo deseas)
+        function logout() {
+            localStorage.removeItem('metodos_numericos_logged_in');
+            loginScreen.style.display = 'flex';
+            contentContainer.style.display = 'none';
+            passwordInput.value = '';
+        }
+        
         // Datos de las sesiones del curso
         const sessionData = [
             {
@@ -1821,7 +1974,7 @@ print(p5)` },
                             modalTitle.textContent = `Código: ${session.title}`;
                             modalContent.innerHTML = `
                                 <div class="code-container">
-                                    <code>${codeResource.content}</code>
+                                    <pre><code>${codeResource.content}</code></pre>
                                 </div>
                             `;
                             contentModal.style.display = 'block';
