@@ -1,6 +1,6 @@
 ```
 	{
-	"name": "worker-name",
+	"name": "codigo",
 	"compatibility_date": "2025-05-22",
 	"assets": {
 	"directory": "./dist"
