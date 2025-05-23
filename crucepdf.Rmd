@@ -1,0 +1,224 @@
+---
+title: "Cruce de Ecuaciones"
+author: "Análisis de Decisiones"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    keep_md: true
+    theme: cerulean
+    highlight: kate
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+    code_folding: show
+    df_print: paged
+    fig_caption: true
+    self_contained: true
+    css: styles.css
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+
+
+
+## Sección 1
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE) # Opciones comunes de chunk
+```
+
+--- Código R para Graficar dos Funciones y Encontrar su Intersección ---
+
+1. Define tus dos funciones predefinidas
+Puedes reemplazar estas funciones con las tuyas.
+Asegúrate de que acepten un vector 'x' como entrada.
+
+## Ejemplo de Función 1: Una parábola
+
+```{r}
+funcion1 <- function(x) {
+  return(x^2 - 2*x - 1) # Ejemplo: y = x^2 - 2x - 1 
+  }
+
+# Ejemplo de Función 2: Una recta
+funcion2 <- function(x) {
+  return(x + 1)         # Ejemplo: y = x + 1
+}
+```
+
+
+
+```{r}
+intervalo1 <- c(-2, 0) # Buscar una raíz entre x=-2 y x=0
+intervalo2 <- c(2, 4)  # Buscar otra raíz entre x=2 y x=4
+
+```
+
+
+## 2. Define el rango de 'x' para la gráfica
+
+```{r}
+
+x_min <- -5   # Valor mínimo de x
+x_max <-  5    # Valor máximo de x
+num_puntos <- 200 # Número de puntos para generar (más puntos = curva más suave)
+
+# Genera la secuencia de valores de x
+x_vals <- seq(x_min, x_max, length.out = num_puntos)
+```
+
+## 3. Calcula los valores de 'y' para cada función
+
+```{r}
+
+y1_vals <- funcion1(x_vals)
+y2_vals <- funcion2(x_vals)
+```
+
+## Crea la gráfica base con la primera función
+
+```{r}
+plot(x_vals, y1_vals, type = "l", col = "blue", lwd = 2 )
+
+# Añade la segunda función a la gráfica existente
+lines(x_vals, y2_vals, type = "l", col = "red", lwd = 2)
+grid()
+```
+
+## 4. Encuentra los puntos de intersección
+
+(numéricamente)
+La intersección ocurre donde :
+funcion1(x) = funcion2(x), 
+
+donde : funcion1(x) - funcion2(x) = 0.
+
+## Definimos una función diferencia:
+
+```{r}
+funcion_diferencia <- function(x) {
+  return(funcion1(x) - funcion2(x))
+}
+```
+
+
+
+```{r}
+xs <- seq(from = 3, to = 4, by = 0.01)
+plot(xs,funcion_diferencia(xs))
+abline(h=0)
+grid()
+```
+
+
+```{r}
+xs <- seq(from = 3.4, to = 3.6, by = 0.01)
+
+diferencia <- -1
+i=0
+
+while (diferencia < 0) {
+   i = i+1
+ diferencia <- funcion_diferencia(xs[i])
+   # Imprimir el estado actual (opcional)
+  cat("X(", i, ")= ",diferencia, ",  X =",xs[i],"\n")
+}
+
+```
+
+```{r}
+plot(xs,funcion_diferencia(xs))
+points(xs[17],funcion_diferencia(xs[17]),pch=21, col="red")
+abline(h=0, v = xs[17],
+         col = "darkgreen", lty = 4)
+grid(col = "darkgray")
+```
+
+## 5. Graficar las funciones y marcar las intersecciones
+
+```{r}
+plot(x_vals, y1_vals, 
+     type = "l", col = "blue", lwd = 2,
+     main = "Gráfica de dos Funciones y sus
+     Intersecciones")
+
+# Añade la segunda función a la gráfica existente
+
+lines(x_vals, y2_vals, type = "l",
+      col = "red", lwd = 2)
+
+# Añade una leyenda
+legend("topright", # Posición de la leyenda (puedes cambiarla)
+       legend = c("Función 1", "Función 2"),
+       col = c("blue", "red"),
+       lwd = 2,
+       bty = "y") # caja alrededor de la leyenda
+
+xs <- seq(from = 3.4, to = 3.6, by = 0.01)
+
+points(xs[17], funcion1(xs[17]) ,
+         col = "darkgreen", # Color del punto
+         pch = 19,         # Tipo de marcador (círculo sólido)
+         cex = 1.5)        # Tamaño del marcador
+
+# Añadir líneas punteadas a los ejes para facilitar la lectura de coordenadas
+  abline(v = xs[17],
+         col = "darkgreen", lty = 4)
+
+# Añadir etiquetas de texto (ajustar 'pos' si se solapan)
+  text(xs[17],funcion1(xs[17]),
+       labels = paste("(", round(xs[17], 2), ")"), pos = c(2, 1), 
+       cex = 0.8,
+       col = "black",
+       font = 2) # Negrita
+grid(col = "darkgray", lty = "dotted")
+```
+
+## Enfoque 2: Método Numérico Preciso con uniroot
+
+Para encontrar las raíces (y por lo tanto, las intersecciones) de forma más precisa, usamos la función uniroot. 
+
+Esta función busca una raíz de una función dentro de un intervalo [lower, upper] especificado.
+
+Importante: uniroot requiere que la función tenga signos opuestos en los extremos del intervalo (f(lower) y f(upper) deben tener signos diferentes).
+
+Necesitamos proporcionar intervalos basados en nuestra inspección visual inicial o conocimiento de las funciones.
+
+```{r}
+fx <- function(x) {
+  return(x^2 - 3*x - 2)  
+  }
+
+```
+
+
+```{r}
+intervalo <- c(2, 4)  # Buscar otra raíz entre x=2 y x=4
+intervalo1 <- c(-2, 0) # Buscar una raíz entre x=-2 y x=0
+```
+
+```{r}
+uniroot(fx, interval = intervalo1)
+uniroot(fx,intervalo)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
