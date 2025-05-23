@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cruce de Ecuaciones - Análisis de Decisiones</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1.2em;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        .concept-box {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #e91e63;
+        }
+        .method-card {
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #ffffcc;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .function-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .toc {
+            background: #f1f3f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .toc li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Cruce de Ecuaciones</h1>
+            <p class="subtitle">Análisis de Decisiones - Encontrando Intersecciones de Funciones</p>
+        </div>
+
+        <div class="toc">
+            <h3>📋 Contenido del Documento</h3>
+            <ul>
+                <li>Configuración del Entorno R</li>
+                <li>Definición de Funciones Matemáticas</li>
+                <li>Visualización Gráfica</li>
+                <li>Métodos de Búsqueda de Intersecciones</li>
+                <li>Implementación Práctica</li>
+            </ul>
+        </div>
+
+        <div class="concept-box">
+            <h3>🎯 ¿Qué Hace Este Código?</h3>
+            <p>Este documento R Markdown te enseña cómo encontrar los puntos donde dos funciones matemáticas se cruzan (intersectan). Es especialmente útil en análisis de decisiones donde necesitas encontrar puntos de equilibrio, umbrales de rentabilidad, o puntos óptimos de operación.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">1</span>Configuración Inicial</h2>
+            <p>El documento comienza configurando el entorno de trabajo. Aquí se establece cómo R Markdown procesará y mostrará el código:</p>
+            
+            <div class="code-block">
+knitr::opts_chunk$set(echo = TRUE, 
+                     message = FALSE, 
+                     warning = FALSE)
+            </div>
+            
+            <p>Esta línea le dice a R que <span class="highlight">muestre el código</span> (echo = TRUE), pero que <span class="highlight">oculte mensajes y advertencias</span> para mantener limpia la salida.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">2</span>Definición de Funciones</h2>
+            <p>El código define dos funciones matemáticas que queremos analizar:</p>
+            
+            <div class="function-demo">
+                <h4>📐 Función 1: Parábola</h4>
+                <div class="code-block">
+funcion1 <- function(x) {
+  return(x^2 - 2*x - 1)  # y = x² - 2x - 1
+}
+                </div>
+                
+                <h4>📏 Función 2: Recta</h4>
+                <div class="code-block">
+funcion2 <- function(x) {
+  return(x + 1)          # y = x + 1
+}
+                </div>
+            </div>
+            
+            <p>Estas funciones son <span class="highlight">totalmente personalizables</span>. Puedes reemplazarlas con cualquier ecuación que necesites analizar en tu problema específico.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">3</span>Preparación para la Gráfica</h2>
+            <p>Antes de graficar, necesitamos definir el rango de valores que queremos visualizar:</p>
+            
+            <div class="code-block">
+x_min <- -5           # Valor mínimo de x
+x_max <-  5           # Valor máximo de x
+num_puntos <- 200     # Número de puntos (más = curva más suave)
+
+# Genera la secuencia de valores de x
+x_vals <- seq(x_min, x_max, length.out = num_puntos)
+            </div>
+            
+            <p>Luego calculamos los valores correspondientes de 'y' para cada función:</p>
+            <div class="code-block">
+y1_vals <- funcion1(x_vals)  # Valores para la parábola
+y2_vals <- funcion2(x_vals)  # Valores para la recta
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">4</span>Visualización Básica</h2>
+            <p>El código crea una gráfica mostrando ambas funciones:</p>
+            
+            <div class="code-block">
+plot(x_vals, y1_vals, type = "l", col = "blue", lwd = 2)
+lines(x_vals, y2_vals, type = "l", col = "red", lwd = 2)
+grid()
+            </div>
+            
+            <p>Esto nos permite ver visualmente dónde las funciones se cruzan, lo cual es el primer paso para encontrar las intersecciones exactas.</p>
+        </div>
+
+        <div class="method-card">
+            <h2>🔬 Método 1: Búsqueda Manual</h2>
+            <p>El primer enfoque utiliza una <span class="highlight">función diferencia</span> para encontrar donde las funciones se igualan:</p>
+            
+            <div class="code-block">
+funcion_diferencia <- function(x) {
+  return(funcion1(x) - funcion2(x))
+}
+            </div>
+            
+            <p>Cuando esta función diferencia vale cero, significa que las funciones originales se intersectan. El código usa un bucle while para encontrar este punto:</p>
+            
+            <div class="code-block">
+diferencia <- -1
+i <- 0
+
+while (diferencia < 0) {
+   i <- i + 1
+   diferencia <- funcion_diferencia(xs[i])
+   cat("X(", i, ")= ", diferencia, ", X =", xs[i], "\n")
+}
+            </div>
+            
+            <div class="warning">
+                <strong>⚠️ Limitación:</strong> Este método manual puede ser impreciso y solo encuentra un punto de intersección a la vez.
+            </div>
+        </div>
+
+        <div class="method-card">
+            <h2>🎯 Método 2: uniroot() - Precisión Numérica</h2>
+            <p>R incluye una función especializada llamada <code>uniroot()</code> que encuentra raíces con alta precisión:</p>
+            
+            <div class="code-block">
+# Definir intervalos donde sabemos que hay intersecciones
+intervalo1 <- c(-2, 0)  # Primera intersección
+intervalo2 <- c(2, 4)   # Segunda intersección
+
+# Encontrar las raíces
+uniroot(funcion_diferencia, interval = intervalo1)
+uniroot(funcion_diferencia, interval = intervalo2)
+            </div>
+            
+            <div class="concept-box">
+                <h4>🧠 Concepto Clave</h4>
+                <p><code>uniroot()</code> requiere que la función tenga <span class="highlight">signos opuestos</span> en los extremos del intervalo. Esto garantiza que hay al menos una raíz en ese rango.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">5</span>Problemas Identificados en el Código</h2>
+            
+            <div class="warning">
+                <h4>🔧 Aspectos a Mejorar:</h4>
+                <ul>
+                    <li><strong>Inconsistencia de funciones:</strong> Al final del código se define una nueva función <code>fx(x) = x² - 3x - 2</code> que no coincide con las funciones originales</li>
+                    <li><strong>Falta de validación:</strong> No verifica si realmente existe una intersección en los intervalos dados</li>
+                    <li><strong>Búsqueda manual ineficiente:</strong> El método while es menos preciso que uniroot()</li>
+                    <li><strong>Documentación incompleta:</strong> Algunos comentarios están cortados o son confusos</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Aplicaciones Prácticas</h2>
+            <p>Este tipo de análisis es fundamental en múltiples campos:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div style="background: #e8f5e8; padding: 15px; border-radius: 8px;">
+                    <h4>💼 Negocios</h4>
+                    <p>Encontrar puntos de equilibrio donde ingresos = costos</p>
+                </div>
+                <div style="background: #e8f4f8; padding: 15px; border-radius: 8px;">
+                    <h4>🔬 Ingeniería</h4>
+                    <p>Optimizar sistemas donde se cruzan múltiples variables</p>
+                </div>
+                <div style="background: #f8e8f4; padding: 15px; border-radius: 8px;">
+                    <h4>📊 Economía</h4>
+                    <p>Analizar puntos donde oferta = demanda</p>
+                </div>
+                <div style="background: #f8f4e8; padding: 15px; border-radius: 8px;">
+                    <h4>🎯 Investigación</h4>
+                    <p>Encontrar valores críticos en modelos matemáticos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="concept-box">
+            <h3>💡 Recomendaciones de Mejora</h3>
+            <ol>
+                <li><strong>Consistencia:</strong> Usar las mismas funciones en todo el documento</li>
+                <li><strong>Validación:</strong> Verificar que los intervalos contengan realmente intersecciones</li>
+                <li><strong>Automatización:</strong> Crear una función que encuentre todas las intersecciones automáticamente</li>
+                <li><strong>Visualización mejorada:</strong> Añadir más detalles gráficos y etiquetas claras</li>
+                <li><strong>Manejo de errores:</strong> Incluir código para manejar casos donde no hay intersecciones</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>🎓 Conclusión</h3>
+            <p>Este documento R Markdown proporciona una base sólida para encontrar intersecciones de funciones, aunque puede beneficiarse de algunas mejoras en consistencia y robustez. Es una herramienta valiosa para análisis de decisiones y optimización matemática.</p>
+        </div>
+    </div>
+</body>
+</html>
