@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendiendo a Graficar con R</title>
+    <style>
+        :root {
+            --primary: #FF7F00;
+            --primary-light: #FFB266;
+            --primary-dark: #CC6600;
+            --secondary: #FFF1E6;
+            --accent: #FF4500;
+            --text: #333333;
+            --text-light: #666666;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--secondary);
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" width="100" height="100"/><path fill="rgba(255,255,255,0.05)" d="M30,10L80,90M40,10L90,90M50,10L100,90M60,10L110,90M70,10L120,90M10,20L60,100M10,30L70,100M10,40L80,100M10,50L90,100M10,60L100,100"/></svg>');
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+        
+        nav {
+            background-color: var(--primary-dark);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: var(--white);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-light);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin: 1.5rem 0 1rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .hero h2 {
+            border-bottom: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-light);
+            color: var(--white);
+        }
+        
+        .btn-download {
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .tab-button {
+            background-color: var(--primary-light);
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 1rem 1.5rem;
+            flex-grow: 1;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: var(--text);
+        }
+        
+        .tab-button:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: var(--white);
+            padding: 1.5rem;
+            border: 1px solid var(--primary-light);
+            border-top: none;
+            width: 100%;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .accordion {
+            background-color: var(--primary-light);
+            color: var(--text);
+            cursor: pointer;
+            padding: 1.2rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            outline: none;
+            font-weight: bold;
+            transition: 0.4s;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px 5px 0 0;
+            font-size: 1.1rem;
+        }
+        
+        .accordion:after {
+            content: '+';
+            font-weight: bold;
+            float: right;
+            margin-left: 0.5rem;
+            font-size: 1.3rem;
+        }
+        
+        .accordion.active {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .accordion.active:after {
+            content: '-';
+        }
+        
+        .accordion:hover {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .panel {
+            padding: 0;
+            background-color: var(--white);
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border-radius: 0 0 5px 5px;
+            border: 1px solid var(--primary-light);
+            border-top: none;
+        }
+        
+        .panel-content {
+            padding: 1.5rem;
+        }
+        
+        .panel.active {
+            max-height: 1000px;
+        }
+        
+        .code-box {
+            background-color: #f8f8f8;
+            padding: 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 3px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            position: relative;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .code-box pre {
+            margin: 0;
+        }
+        
+        .plot-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .plot-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .plot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plot-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 1.5rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .plot-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .plot-description {
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .plot-img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            background-color: #f8f8f8;
+        }
+        
+        .tip-box {
+            background-color: var(--primary-light);
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        
+        .tip-box::before {
+            content: "💡 Consejo";
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .note-box {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 1rem;
+            border-radius: 0 3px 3px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .note-box::before {
+            content: "📝 Nota";
+            font-weight: bold;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1890ff;
+        }
+        
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            color: var(--white);
+            border-bottom: 1px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--primary-light);
+        }
+        
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem 0;
+            }
+            
+            .plot-type-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Aprendiendo a Graficar con R</h1>
+            <p>Guía completa para visualizar datos y funciones con el lenguaje R</p>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">R-Gráficos</a>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#fundamentos">Fundamentos</a></li>
+                <li><a href="#tipos-graficos">Tipos de Gráficos</a></li>
+                <li><a href="#multiples-graficos">Múltiples Gráficos</a></li>
+                <li><a href="#ejercicios">Ejercicios</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section id="inicio" class="hero">
+            <h2>Bienvenidos al curso de Graficación con R</h2>
+            <p>R es uno de los lenguajes más potentes para la visualización de datos. Este curso te enseñará a crear diversos tipos de gráficos, personalizarlos y organizarlos para comunicar tus resultados de manera efectiva.</p>
+            <a href="#fundamentos" class="btn">Comenzar a aprender</a>
+        </section>
+
+        <section id="fundamentos">
+            <h2>Fundamentos de Graficación en R</h2>
+            <p>Antes de empezar a crear gráficos complejos, es importante entender los conceptos básicos de cómo R maneja las visualizaciones. La función principal para crear gráficos en R es <code>plot()</code>, que permite generar diversos tipos de representaciones visuales.</p>
+            
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'creacion-datos')">Creación de Datos</button>
+                <button class="tab-button" onclick="openTab(event, 'funcion-plot')">Función Plot</button>
+                <button class="tab-button" onclick="openTab(event, 'parametros')">Parámetros Básicos</button>
+                
+                <div id="creacion-datos" class="tab-content active">
+                    <h3>Creando Datos para Visualizar</h3>
+                    <p>Antes de crear un gráfico, necesitamos datos para visualizar. En R, podemos generar secuencias de valores fácilmente:</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Crear una secuencia de valores del 0 al 10 con intervalos de 0.5
+valores <- seq(0, 10, 0.5)
+
+# Elevar al cuadrado cada valor
+ch <- valores^2  # También se puede escribir como: valores ** 2
+                        </pre>
+                    </div>
+                    
+                    <p>En este ejemplo:</p>
+                    <ul>
+                        <li><code>seq(0, 10, 0.5)</code> crea una secuencia que va del 0 al 10 con incrementos de 0.5</li>
+                        <li><code>valores^2</code> eleva al cuadrado cada elemento del vector, creando una nueva colección de valores</li>
+                        <li>También se puede usar <code>valores ** 2</code> como alternativa si tienes problemas con el símbolo <code>^</code></li>
+                    </ul>
+                    
+                    <div class="note-box">
+                        <p>R permite transformar vectores completos con una sola operación, sin necesidad de bucles. Esto hace que el código sea más limpio y eficiente.</p>
+                    </div>
+                </div>
+                
+                <div id="funcion-plot" class="tab-content">
+                    <h3>La Función Plot</h3>
+                    <p>La función <code>plot()</code> es la herramienta principal para crear gráficos en R. Es muy flexible y puede generar diferentes tipos de visualizaciones dependiendo de los parámetros que utilices.</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Sintaxis básica de la función plot
+plot(x, y, type = "p", ...)
+
+# Ejemplo concreto
+plot(valores, ch, type = "l")
+                        </pre>
+                    </div>
+                    
+                    <p>Los argumentos principales de <code>plot()</code> son:</p>
+                    <ul>
+                        <li><strong>x:</strong> Vector de valores para el eje x</li>
+                        <li><strong>y:</strong> Vector de valores para el eje y</li>
+                        <li><strong>type:</strong> Tipo de gráfico a generar (explicado en la siguiente sección)</li>
+                        <li><strong>...</strong> Otros parámetros como color, títulos, etiquetas, etc.</li>
+                    </ul>
+                    
+                    <div class="tip-box">
+                        <p>Los nombres de tus variables no tienen que ser necesariamente "x" y "y". Puedes utilizar nombres descriptivos para tus datos y luego pasarlos a la función <code>plot()</code> como en nuestro ejemplo: <code>plot(valores, ch)</code>.</p>
+                    </div>
+                </div>
+                
+                <div id="parametros" class="tab-content">
+                    <h3>Parámetros Básicos</h3>
+                    <p>La función <code>plot()</code> acepta numerosos parámetros para personalizar la apariencia del gráfico. Aquí te mostramos algunos de los más importantes:</p>
+                    
+                    <ul>
+                        <li><strong>main:</strong> Título principal del gráfico</li>
+                        <li><strong>xlab, ylab:</strong> Etiquetas para los ejes x e y</li>
+                        <li><strong>col:</strong> Color de los puntos o líneas</li>
+                        <li><strong>lwd:</strong> Ancho de las líneas (line width)</li>
+                        <li><strong>pch:</strong> Símbolo usado para los puntos (point character)</li>
+                        <li><strong>cex:</strong> Tamaño de los símbolos</li>
+                        <li><strong>lty:</strong> Tipo de línea (line type)</li>
+                        <li><strong>xlim, ylim:</strong> Límites para los ejes x e y</li>
+                    </ul>
+                    
+                    <div class="code-box">
+                        <pre>
+# Ejemplo con algunos parámetros adicionales
+plot(valores, ch, 
+     type = "l",
+     main = "Función Cuadrática",
+     xlab = "Valores de X",
+     ylab = "X al cuadrado",
+     col = "red",
+     lwd = 2)
+                        </pre>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p>Exploraremos más opciones de personalización en secciones posteriores. Por ahora, enfoquémonos en entender los diferentes tipos de gráficos que podemos crear con el parámetro <code>type</code>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tipos-graficos">
+            <h2>Tipos de Gráficos con el Parámetro "type"</h2>
+            <p>El parámetro <code>type</code> de la función <code>plot()</code> determina qué estilo de gráfico se generará. Cada tipo tiene sus propias características y aplicaciones específicas.</p>
+            
+            <div class="plot-type-grid">
+                <!-- Tipo "l" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "l" - Líneas
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico de tipo línea" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "l" (línea) conecta los puntos con líneas rectas. Es ideal para mostrar tendencias continuas o funciones matemáticas.</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "l")</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tipo "p" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "p" - Puntos
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico de tipo puntos" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "p" (puntos) muestra solo los puntos sin conectarlos. Es útil para visualizar datos discretos o dispersos.</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "p")</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tipo "o" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "o" - Sobrepuestos
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico de tipo sobrepuestos" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "o" (overplotted) dibuja tanto los puntos como las líneas que los conectan. Combina las ventajas de los tipos "l" y "p".</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "o")</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tipo "s" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "s" - Escalera
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico de tipo escalera" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "s" (steps/escalera) crea un gráfico de escalones. Útil para representar funciones que cambian en valores discretos o datos que se mantienen constantes por intervalos.</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "s")</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tipo "h" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "h" - Histograma
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico de tipo histograma" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "h" (heights/alturas) dibuja líneas verticales desde el eje x hasta cada punto de datos. Es similar a un histograma y útil para visualizar distribuciones o magnitudes.</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "h")</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tipo "n" -->
+                <div class="plot-card">
+                    <div class="plot-header">
+                        Tipo "n" - Sin Gráfico
+                    </div>
+                    <div class="plot-body">
+                        <img src="/api/placeholder/400/320" alt="Gráfico vacío" class="plot-img">
+                        <div class="plot-description">
+                            <p>El tipo "n" (none) crea un gráfico vacío con los ejes pero sin puntos ni líneas. Es útil cuando quieres establecer el espacio del gráfico primero y luego agregar elementos manualmente.</p>
+                        </div>
+                        <div class="code-box">
+                            <pre>plot(valores, ch, type = "n")</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <p>Experimenta con diferentes tipos de gráficos para el mismo conjunto de datos. Cada tipo puede revelar aspectos diferentes de tus datos y ser más adecuado según lo que quieras comunicar.</p>
+            </div>
+        </section>
+
+        <section id="multiples-graficos">
+            <h2>Creando Múltiples Gráficos</h2>
+            <p>En muchas ocasiones, necesitarás comparar varios gráficos simultáneamente. R te permite dividir la ventana de gráficos en varias subventanas utilizando la función <code>par()</code> con el parámetro <code>mfrow</code>.</p>
+            
+            <button class="accordion">¿Cómo dividir la ventana de gráficos?</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Para dividir la ventana de gráficos, utilizamos la función <code>par(mfrow=c(filas, columnas))</code>:</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Dividir la ventana en 2 filas y 3 columnas
+par(mfrow=c(2, 3))
+
+# Ahora, cada plot que generemos irá llenando esta cuadrícula
+# de izquierda a derecha y de arriba hacia abajo
+                        </pre>
+                    </div>
+                    
+                    <p>Después de ejecutar esta línea, cada vez que llames a la función <code>plot()</code>, el gráfico se dibujará en la siguiente celda disponible de la cuadrícula, llenándola de izquierda a derecha y de arriba hacia abajo.</p>
+                    
+                    <p>Para volver a la configuración normal de un solo gráfico, puedes usar:</p>
+                    <div class="code-box">
+                        <pre>par(mfrow=c(1, 1))</pre>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="accordion">Ejemplo de múltiples gráficos con todos los tipos</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Veamos un ejemplo completo donde creamos una cuadrícula de 2x3 para mostrar los seis tipos de gráficos que hemos aprendido:</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Crear datos
+valores <- seq(0, 10, 0.5)
+ch <- valores^2  # valores al cuadrado
+
+# Configurar una cuadrícula de 2 filas y 3 columnas
+par(mfrow=c(2, 3))
+
+# Dibujar cada tipo de gráfico
+plot(valores, ch, type = "l", main="Tipo 'l' - Líneas")
+plot(valores, ch, type = "p", main="Tipo 'p' - Puntos")
+plot(valores, ch, type = "o", main="Tipo 'o' - Sobrepuestos")
+plot(valores, ch, type = "s", main="Tipo 's' - Escalera")
+plot(valores, ch, type = "h", main="Tipo 'h' - Histograma")
+plot(valores, ch, type = "n", main="Tipo 'n' - Sin Gráfico")
+                        </pre>
+                    </div>
+                    
+                    <p>Este código genera una visualización comparativa de todos los tipos de gráficos usando los mismos datos, lo que facilita entender las diferencias entre ellos.</p>
+                    
+                    <div class="note-box">
+                        <p>La función <code>par()</code> afecta a todos los gráficos que se crean después de llamarla. Si quieres restaurar la configuración original, debes llamar a <code>par(mfrow=c(1,1))</code>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="accordion">Otras opciones de organización de gráficos</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Además de <code>mfrow</code>, R ofrece otras opciones para organizar múltiples gráficos:</p>
+                    
+                    <ul>
+                        <li><strong>mfcol</strong>: Similar a <code>mfrow</code>, pero llena la cuadrícula por columnas en lugar de por filas</li>
+                        <li><strong>layout</strong>: Ofrece mayor flexibilidad, permitiendo diseños más complejos con celdas de diferentes tamaños</li>
+                        <li><strong>split.screen</strong>: Divide la ventana en regiones que pueden ser accedidas individualmente</li>
+                    </ul>
+                    
+                    <p>Ejemplo con <code>layout</code>:</p>
+                    <div class="code-box">
+                        <pre>
+# Crear una matriz que define el diseño
+matriz_layout <- matrix(c(1, 1, 2, 3, 4, 5), nrow=2, byrow=TRUE)
+
+# Aplicar el diseño
+layout(matriz_layout)
+
+# Crear 5 gráficos que se organizarán según el diseño
+plot(valores, ch, type="l", main="Gráfico 1 (doble ancho)")
+plot(valores, ch, type="p", main="Gráfico 2")
+plot(valores, ch, type="o", main="Gráfico 3")
+plot(valores, ch, type="s", main="Gráfico 4")
+plot(valores, ch, type="h", main="Gráfico 5")
+                        </pre>
+                    </div>
+                    
+                    <p>Este código crea un diseño donde el primer gráfico ocupa dos columnas en la fila superior, y los otros cuatro gráficos se distribuyen en las posiciones restantes.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="ejercicios">
+            <h2>Ejercicios Prácticos</h2>
+            <p>La mejor manera de aprender a graficar en R es mediante la práctica. Aquí tienes algunos ejercicios para poner a prueba tus conocimientos:</p>
+            
+            <div class="accordion">Ejercicio 1: Gráfico de una función seno</div>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Crea un gráfico de la función seno en el intervalo [0, 2π] con una línea roja y título personalizado.</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Solución
+# Crear datos
+x <- seq(0, 2*pi, length.out=100)
+y <- sin(x)
+
+# Crear gráfico
+plot(x, y, type="l", col="red", 
+     main="Función Seno", 
+     xlab="x (radianes)", 
+     ylab="sin(x)")
+
+# Agregar una línea horizontal en y=0
+abline(h=0, lty=2, col="gray")
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion">Ejercicio 2: Comparación de funciones</div>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Crea un gráfico que muestre tanto la función seno como la función coseno en el mismo gráfico, con colores diferentes y una leyenda.</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Solución
+# Crear datos
+x <- seq(0, 2*pi, length.out=100)
+y_sin <- sin(x)
+y_cos <- cos(x)
+
+# Crear gráfico con sin(x)
+plot(x, y_sin, type="l", col="red", 
+     main="Funciones Seno y Coseno", 
+     xlab="x (radianes)", 
+     ylab="Valor",
+     ylim=c(-1.2, 1.2))  # Ajustar los límites para que quepan ambas funciones
+
+# Agregar cos(x) al gráfico existente
+lines(x, y_cos, type="l", col="blue")
+
+# Agregar línea horizontal en y=0
+abline(h=0, lty=2, col="gray")
+
+# Agregar leyenda
+legend("topright", 
+       legend=c("sin(x)", "cos(x)"), 
+       col=c("red", "blue"), 
+       lty=1)
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion">Ejercicio 3: Múltiples visualizaciones</div>
+            <div class="panel">
+                <div class="panel-content">
+                    <p>Crea una cuadrícula de 2x2 con cuatro visualizaciones diferentes de la función f(x) = x² - 4x + 4: un gráfico de línea, un gráfico de puntos, un gráfico de tipo escalera, y un gráfico de tipo histograma.</p>
+                    
+                    <div class="code-box">
+                        <pre>
+# Solución
+# Crear datos
+x <- seq(-2, 6, by=0.1)
+y <- x^2 - 4*x + 4  # f(x) = x² - 4x + 4 (una parábola)
+
+# Configurar cuadrícula 2x2
+par(mfrow=c(2, 2))
+
+# Crear los cuatro gráficos
+plot(x, y, type="l", col="darkblue", main="Línea", xlab="x", ylab="f(x)")
+abline(h=0, v=0, lty=2, col="gray")
+
+plot(x, y, type="p", col="darkgreen", main="Puntos", xlab="x", ylab="f(x)")
+abline(h=0, v=0, lty=2, col="gray")
+
+plot(x, y, type="s", col="darkred", main="Escalera", xlab="x", ylab="f(x)")
+abline(h=0, v=0, lty=2, col="gray")
+
+plot(x, y, type="h", col="purple", main="Histograma", xlab="x", ylab="f(x)")
+abline(h=0, v=0, lty=2, col="gray")
+                        </pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tip-box">
+                <p>Intenta modificar los ejemplos y ejercicios cambiando parámetros como colores, grosores de línea, tipos de punto, etc. La experimentación es clave para dominar la graficación en R.</p>
+            </div>
+        </section>
+
+        <section id="recursos">
+            <h2>Recursos Adicionales</h2>
+            
+            <button class="accordion">Documentación Oficial</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <ul>
+                        <li><a href="https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Graphics" target="_blank">Introducción a Gráficos en R (Manual oficial)</a></li>
+                        <li><a href="https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/plot" target="_blank">Documentación de la función plot()</a></li>
+                        <li><a href="https://cran.r-project.org/doc/manuals/r-release/R-data.html" target="_blank">Manipulación de datos en R</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="accordion">Tutoriales y Libros Recomendados</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <ul>
+                        <li>Wickham, H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer.</li>
+                        <li>Murrell, P. (2018). <em>R Graphics</em>. Chapman and Hall/CRC.</li>
+                        <li>Chang, W. (2018). <em>R Graphics Cookbook</em>. O'Reilly Media.</li>
+                        <li><a href="https://r-graphics.org/" target="_blank">R Graphics Cookbook (Online)</a></li>
+                        <li><a href="https://www.r-graph-gallery.com/" target="_blank">R Graph Gallery</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <button class="accordion">Paquetes Avanzados para Gráficos</button>
+            <div class="panel">
+                <div class="panel-content">
+                    <ul>
+                        <li><strong>ggplot2:</strong> Sistema de graficación basado en la "gramática de gráficos", permite crear visualizaciones complejas y estéticas</li>
+                        <li><strong>lattice:</strong> Sistema para crear gráficos multivariados</li>
+                        <li><strong>plotly:</strong> Para crear gráficos interactivos</li>
+                        <li><strong>rgl:</strong> Gráficos 3D interactivos</li>
+                        <li><strong>leaflet:</strong> Para crear mapas interactivos</li>
+                    </ul>
+                    
+                    <div class="code-box">
+                        <pre>
+# Instalar paquetes de visualización avanzados
+install.packages(c("ggplot2", "lattice", "plotly", "rgl", "leaflet"))
+
+# Cargar ggplot2
+library(ggplot2)
+
+# Ejemplo básico con ggplot2
+ggplot(data=data.frame(x=valores, y=ch), aes(x=x, y=y)) +
+  geom_line(color="blue") +
+  geom_point(color="red") +
+  labs(title="Función Cuadrática", x="Valores", y="Valores al cuadrado") +
+  theme_minimal()
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Navegación Rápida</h3>
+                    <ul class="footer-links">
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#fundamentos">Fundamentos</a></li>
+                        <li><a href="#tipos-graficos">Tipos de Gráficos</a></li>
+                        <li><a href="#multiples-graficos">Múltiples Gráficos</a></li>
+                        <li><a href="#ejercicios">Ejercicios</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Recursos Adicionales</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Descargar ejemplos</a></li>
+                        <li><a href="#">Foro de discusión</a></li>
+                        <li><a href="#">Manual completo</a></li>
+                        <li><a href="#">Glosario de términos</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Departamento de Estadística<br>
+                    Facultad de Ciencias<br>
+                    Universidad Nacional<br>
+                    Email: graficacion.r@universidad.edu</p>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Curso de Graficación con R. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Funciones para las pestañas
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        // Funciones para acordeones
+        var acc = document.getElementsByClassName("accordion");
+        for (var i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.classList.contains("active")) {
+                    panel.classList.remove("active");
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.classList.add("active");
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        }
+    </script>
+</body>
+</html>
