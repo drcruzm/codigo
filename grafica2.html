@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversión de MATLAB a R: Tutorial Paso a Paso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        .code-block {
+            background-color: #2d3748;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .explanation-box {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .concept-highlight {
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #667eea;
+            color: white;
+        }
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: #667eea;
+        }
+        .section-title {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .code-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        @media (max-width: 768px) {
+            .code-comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+        .language-label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        .language-label.matlab {
+            background-color: #ff6b35;
+        }
+        .language-label.r {
+            background-color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-3">Conversión de MATLAB a R</h1>
+                    <p class="lead">Tutorial paso a paso para entender las diferencias y similitudes entre estos dos lenguajes de programación científica</p>
+                    <div class="mt-4">
+                        <span class="badge bg-light text-dark fs-6 me-2">Métodos Numéricos</span>
+                        <span class="badge bg-light text-dark fs-6 me-2">Análisis de Datos</span>
+                        <span class="badge bg-light text-dark fs-6">Programación Científica</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                
+                <div class="concept-highlight">
+                    <h4><i class="fas fa-lightbulb"></i> Introducción al Problema</h4>
+                    <p>En este tutorial vamos a convertir un programa de MATLAB que encuentra las raíces de la función <code>sin(x) - csc(x) + 1</code> a su equivalente en R. Este tipo de conversión es fundamental cuando necesitamos migrar código entre diferentes plataformas de análisis numérico.</p>
+                    <p>La función que analizaremos combina funciones trigonométricas y busca los puntos donde la función cruza el eje x (raíces), lo cual es un problema común en métodos numéricos y análisis matemático.</p>
+                </div>
+
+                <div class="accordion" id="codeAccordion">
+                    
+                    <!-- Sección 1: Configuración inicial -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                <strong>1. Configuración Inicial y Limpieza del Entorno</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="heading1" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="explanation-box">
+                                    <h5>¿Por qué es importante limpiar el entorno?</h5>
+                                    <p>Antes de comenzar cualquier análisis, es una buena práctica limpiar el entorno de trabajo. Esto nos asegura que no haya variables residuales de ejecuciones anteriores que puedan interferir con nuestros cálculos actuales.</p>
+                                </div>
+                                
+                                <div class="code-comparison">
+                                    <div>
+                                        <div class="language-label matlab">MATLAB</div>
+                                        <pre><code class="language-matlab">clc; clear</code></pre>
+                                    </div>
+                                    <div>
+                                        <div class="language-label r">R Markdown</div>
+                                        <pre><code class="language-r"># Limpiar el entorno de trabajo
+rm(list = ls())</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <p><strong>Explicación de la conversión:</strong></p>
+                                    <ul>
+                                        <li><code>clc</code> en MATLAB limpia la ventana de comandos, pero en R no necesitamos un equivalente directo</li>
+                                        <li><code>clear</code> en MATLAB elimina todas las variables, mientras que <code>rm(list = ls())</code> en R hace lo mismo</li>
+                                        <li>En R Markdown, agregamos comentarios descriptivos usando <code>#</code> para mejorar la legibilidad</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 2: Definición del dominio -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                <strong>2. Definición del Dominio de la Función</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="explanation-box">
+                                    <h5>Creando secuencias numéricas</h5>
+                                    <p>Necesitamos crear un conjunto de puntos en el intervalo [2, 2.8] con incrementos de 0.1. Esto nos permitirá evaluar la función en múltiples puntos para observar su comportamiento.</p>
+                                </div>
+                                
+                                <div class="code-comparison">
+                                    <div>
+                                        <div class="language-label matlab">MATLAB</div>
+                                        <pre><code class="language-matlab">x = 2:0.1:2.8;</code></pre>
+                                    </div>
+                                    <div>
+                                        <div class="language-label r">R</div>
+                                        <pre><code class="language-r"># Crear un vector de valores desde 2 hasta 2.8 
+# con incrementos de 0.1
+x <- seq(2, 2.8, by = 0.1)</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="concept-highlight">
+                                    <h6>Diferencias clave:</h6>
+                                    <p><strong>MATLAB:</strong> Usa la sintaxis <code>inicio:paso:fin</code> que es muy intuitiva y concisa.</p>
+                                    <p><strong>R:</strong> Utiliza la función <code>seq()</code> con parámetros nombrados <code>from</code>, <code>to</code>, y <code>by</code>, lo cual es más explícito y autodocumentado.</p>
+                                    <p>Ambos enfoques generan el mismo resultado: un vector con los valores [2.0, 2.1, 2.2, ..., 2.8].</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 3: Función personalizada -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                <strong>3. Definición de Funciones Matemáticas Personalizadas</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="explanation-box">
+                                    <h5>El desafío de la función cosecante</h5>
+                                    <p>La función cosecante (csc) no está incluida por defecto en R, a diferencia de MATLAB. Necesitamos definirla nosotros mismos usando la relación matemática: csc(x) = 1/sin(x).</p>
+                                </div>
+                                
+                                <div class="code-comparison">
+                                    <div>
+                                        <div class="language-label matlab">MATLAB</div>
+                                        <pre><code class="language-matlab">function F = grafica(x, inicia, termina)
+c = 1;
+    for x= inicia:0.1:termina
+    F(c) = sin(x) - csc(x) + 1;
+    c = c + 1;
+    end
+end</code></pre>
+                                    </div>
+                                    <div>
+                                        <div class="language-label r">R</div>
+                                        <pre><code class="language-r"># Definir la función grafica similar a la función MATLAB
+grafica <- function(x, inicia, termina) {
+  # Definir la función cosecante que no está 
+  # incluida en R por defecto
+  csc <- function(x) {
+    return(1/sin(x))
+  }
+  
+  # Crear un vector para almacenar los resultados
+  c <- 1
+  F <- numeric(length(seq(inicia, termina, by = 0.1)))
+  
+  # Calcular valores para cada punto en el rango
+  for (val in seq(inicia, termina, by = 0.1)) {
+    F[c] <- sin(val) - csc(val) + 1
+    c <- c + 1
+  }
+  
+  return(F)
+}</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="concept-highlight">
+                                    <h6>Aspectos importantes de esta conversión:</h6>
+                                    <p><strong>1. Definición de funciones anidadas:</strong> En R, definimos la función <code>csc</code> dentro de la función <code>grafica</code> para encapsular la funcionalidad.</p>
+                                    <p><strong>2. Inicialización de vectores:</strong> Usamos <code>numeric()</code> para crear un vector de números inicializado con ceros, lo cual es más eficiente que hacer crecer el vector dinámicamente.</p>
+                                    <p><strong>3. Bucles for:</strong> En R, iteramos sobre los valores directamente usando <code>seq()</code> en lugar de usar índices como en MATLAB.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 4: Cálculo y visualización -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                                <strong>4. Cálculo de Valores y Visualización de Resultados</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="heading4" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="explanation-box">
+                                    <h5>Ejecutando la función y mostrando resultados</h5>
+                                    <p>Una vez definida nuestra función, la ejecutamos con los parámetros apropiados y mostramos los resultados para verificar que todo funciona correctamente.</p>
+                                </div>
+                                
+                                <div class="code-comparison">
+                                    <div>
+                                        <div class="language-label matlab">MATLAB</div>
+                                        <pre><code class="language-matlab">y = grafica(x, 2, 2.8)</code></pre>
+                                    </div>
+                                    <div>
+                                        <div class="language-label r">R</div>
+                                        <pre><code class="language-r"># Calcular y mostrar los valores de y
+y <- grafica(x, 2, 2.8)
+print(y)</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <p><strong>Diferencia importante:</strong> En MATLAB, los resultados se muestran automáticamente cuando no terminas la línea con punto y coma. En R, necesitamos usar explícitamente <code>print()</code> para mostrar los valores.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 5: Graficación avanzada -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading5">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+                                <strong>5. Graficación Avanzada y Análisis Visual</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="heading5" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="explanation-box">
+                                    <h5>Creando gráficas informativas</h5>
+                                    <p>La visualización es crucial para entender el comportamiento de funciones matemáticas. Vamos a crear una gráfica que muestre la función, sus raíces y los intervalos de interés.</p>
+                                </div>
+                                
+                                <div class="code-comparison">
+                                    <div>
+                                        <div class="language-label matlab">MATLAB</div>
+                                        <pre><code class="language-matlab">plot(x, y, '-m')
+grid on
+hold on
+fplot(zeros(), [2 2.8])
+%intervalo de solucion:
+xline(2.39, '-b')
+xline(2.52, '-b')
+ax = gca;
+chart = ax.Children(3);
+datatip(chart,2.475,0);
+dt = findobj(gca,'DataIndex',1);
+set(dt,'X',2.472,'Y',0);</code></pre>
+                                    </div>
+                                    <div>
+                                        <div class="language-label r">R</div>
+                                        <pre><code class="language-r"># Crear la gráfica
+plot(x, y, type = "l", col = "magenta", 
+     main = "Gráfica de sin(x) - csc(x) + 1",
+     xlab = "x", ylab = "f(x)")
+
+# Añadir grid
+grid()
+
+# Añadir línea horizontal en y = 0
+abline(h = 0, col = "black")
+
+# Añadir líneas verticales en los puntos de interés
+abline(v = 2.39, col = "blue")
+abline(v = 2.52, col = "blue")
+
+# Añadir un punto en el punto de interés 
+# (aproximación de la raíz)
+points(2.472, 0, pch = 16, col = "red")
+
+# Leyenda para claridad
+legend("topright", 
+       legend = c("f(x) = sin(x) - csc(x) + 1", 
+                  "Raíz aproximada"),
+       col = c("magenta", "red"), 
+       lty = c(1, NA), pch = c(NA, 16))</code></pre>
+                                    </div>
+                                </div>
+                                
+                                <div class="concept-highlight">
+                                    <h6>Análisis detallado de la conversión gráfica:</h6>
+                                    <p><strong>1. Función plot():</strong> En R usamos <code>type = "l"</code> para líneas, mientras que MATLAB usa <code>'-m'</code> para línea magenta.</p>
+                                    <p><strong>2. Líneas de referencia:</strong> <code>abline()</code> en R reemplaza a <code>xline()</code> y <code>fplot(zeros())</code> de MATLAB.</p>
+                                    <p><strong>3. Puntos destacados:</strong> La funcionalidad de <code>datatip</code> de MATLAB se reemplaza con <code>points()</code> en R.</p>
+                                    <p><strong>4. Leyendas:</strong> R requiere que creemos explícitamente la leyenda con <code>legend()</code>, lo cual es más trabajo pero ofrece mayor control.</p>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <h5>¿Qué nos muestra esta gráfica?</h5>
+                                    <p>La gráfica resultante nos permite identificar visualmente:</p>
+                                    <ul>
+                                        <li><strong>El comportamiento de la función:</strong> Cómo cambia sin(x) - csc(x) + 1 en el intervalo [2, 2.8]</li>
+                                        <li><strong>Las raíces:</strong> Los puntos donde la función cruza el eje x (y = 0)</li>
+                                        <li><strong>El intervalo de solución:</strong> Marcado por las líneas verticales azules entre 2.39 y 2.52</li>
+                                        <li><strong>La raíz aproximada:</strong> Marcada con un punto rojo en x ≈ 2.472</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección 6: Resumen y mejores prácticas -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading6">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+                                <strong>6. Resumen y Mejores Prácticas</strong>
+                            </button>
+                        </h2>
+                        <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="heading6" data-bs-parent="#codeAccordion">
+                            <div class="accordion-body">
+                                <div class="concept-highlight">
+                                    <h5>Lecciones aprendidas en la conversión</h5>
+                                    <p>Esta conversión de MATLAB a R nos ha enseñado varios conceptos importantes sobre las diferencias entre estos dos lenguajes de programación científica:</p>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <h6>1. Filosofías de diseño diferentes</h6>
+                                    <p><strong>MATLAB:</strong> Diseñado específicamente para cálculos matriciales y análisis numérico. Tiene sintaxis más concisa para operaciones matemáticas.</p>
+                                    <p><strong>R:</strong> Diseñado originalmente para estadística, pero expandido para análisis científico general. Enfatiza la claridad y la funcionalidad explícita.</p>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <h6>2. Manejo de funciones matemáticas</h6>
+                                    <p>MATLAB incluye más funciones matemáticas por defecto (como csc), mientras que R requiere que definamos algunas funciones nosotros mismos o las importemos de paquetes especializados.</p>
+                                </div>
+                                
+                                <div class="explanation-box">
+                                    <h6>3. Graficación y visualización</h6>
+                                    <p>Ambos lenguajes son capaces de crear gráficas de alta calidad, pero con enfoques diferentes:</p>
+                                    <ul>
+                                        <li>MATLAB tiene comandos más directos para algunas funciones gráficas específicas</li>
+                                        <li>R ofrece mayor flexibilidad y control granular sobre los elementos gráficos</li>
+                                        <li>R requiere más código explícito, pero esto resulta en mayor legibilidad y mantenibilidad</li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="concept-highlight">
+                                    <h6>Mejores prácticas para futuras conversiones:</h6>
+                                    <ol>
+                                        <li><strong>Comentar extensivamente:</strong> Los comentarios ayudan a entender la lógica, especialmente durante conversiones</li>
+                                        <li><strong>Verificar bibliotecas:</strong> Siempre verificar qué funciones están disponibles por defecto en cada lenguaje</li>
+                                        <li><strong>Probar incrementalmente:</strong> Convertir y probar sección por sección en lugar de todo de una vez</li>
+                                        <li><strong>Documentar diferencias:</strong> Mantener un registro de las diferencias encontradas para referencia futura</li>
+                                        <li><strong>Validar resultados:</strong> Siempre comparar los resultados numéricos y gráficos entre ambas versiones</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-light rounded">
+                    <h5 class="text-center text-muted">¡Excelente trabajo!</h5>
+                    <p class="text-center text-muted mb-0">Has completado la conversión de MATLAB a R. Este tipo de habilidades de traducción entre lenguajes de programación científica te serán muy útiles en tu carrera profesional.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+</body>
+</html>
