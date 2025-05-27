@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial de Graficación en R Markdown</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-style: italic;
+            font-size: 1.2em;
+        }
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            border-left: 4px solid #3498db;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #e74c3c;
+            white-space: pre-wrap;
+            line-height: 1.4;
+        }
+        .code-block .comment {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        .concept-box {
+            background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #e91e63;
+        }
+        .method-card {
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .highlight {
+            background: #ffffcc;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .function-demo {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .toc {
+            background: #f1f3f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+        .toc li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .parameter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .parameter-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        .parameter-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            background: white;
+        }
+        .parameter-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+        .parameter-table code {
+            background: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .plot-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .plot-type-card {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .plot-type-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .plot-type-card code {
+            font-size: 1.2em;
+            color: #e74c3c;
+        }
+        .example-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .tip {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .tip::before {
+            content: "💡 ";
+            font-size: 1.2em;
+        }
+        h2 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #34495e;
+            margin-top: 20px;
+        }
+        .chunk-options {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .chunk-options h4 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .chunk-options ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .chunk-options li {
+            margin: 5px 0;
+        }
+        .chunk-options code {
+            background: #fff;
+            padding: 2px 4px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 1.2em;
+            color: #2c3e50;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Graficación con plot() en R Markdown</h1>
+            <p class="subtitle">Tutorial completo para crear visualizaciones impactantes con R <br> Dr. Víctor Cruz M.</p>
+        </div>
+
+        <div class="toc">
+            <h3>📋 Contenido del Tutorial</h3>
+            <ul>
+                <li>Introducción a plot() en R Markdown</li>
+                <li>Conceptos básicos de plot()</li>
+                <li>Tipos de gráficos con el parámetro type</li>
+                <li>Personalización avanzada de la apariencia</li>
+                <li>Añadir elementos a gráficos existentes</li>
+                <li>Graficación de funciones matemáticas</li>
+                <li>Combinación de datos y funciones</li>
+                <li>Configuración de chunks en R Markdown</li>
+            </ul>
+        </div>
+
+        <div class="concept-box">
+            <h3>🎯 ¿Por qué usar plot() en R Markdown?</h3>
+            <p>La función <code>plot()</code> es la piedra angular de la visualización en R. Su versatilidad la
+                 convierte en una herramienta esencial para crear desde gráficos simples hasta visualizaciones
+                 complejas. <br> Cuando la usas en R Markdown, las gráficas se integran perfectamente en tus documentos,
+                 permitiéndote crear informes dinámicos y reproducibles con visualizaciones profesionales.</p>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">1</span>Introducción a plot() en R Markdown</h2>
+            <p>La función <code>plot()</code> en R es increíblemente versátil y es la base para crear una gran variedad 
+                de gráficos.
+                <br> Cuando utilizas <code>plot()</code> dentro de un chunk de R en tu documento R Markdown, la gráfica se generará y se incrustará automáticamente en el documento final, ya sea HTML, PDF o Word.</p>
+            
+            <div class="tip">
+                <strong>Tip:</strong> Los gráficos creados con <code>plot()</code> se renderizarán automáticamente en tu documento R Markdown sin necesidad de comandos adicionales de exportación.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">2</span>Conceptos Básicos de plot()</h2>
+            <p>La sintaxis más básica de <code>plot()</code> es <code>plot(x, y)</code>, donde x e y son vectores numéricos. Esto creará un gráfico de dispersión por defecto.</p>
+            
+            <div class="example-box">
+                <h3>Ejemplo 1: Gráfico de Dispersión Simple</h3>
+                <div class="code-block">```{r scatter_plot_simple}
+<span class="comment"># Generar datos aleatorios</span>
+x <- rnorm(100)  <span class="comment"># 100 números de una distribución normal</span>
+y <- rnorm(100)
+
+<span class="comment"># Crear el gráfico de dispersión</span>
+plot(x, y,
+     main = "Gráfico de Dispersión Simple",  <span class="comment"># Título principal</span>
+     xlab = "Variable X",                     <span class="comment"># Etiqueta del eje X</span>
+     ylab = "Variable Y")                     <span class="comment"># Etiqueta del eje Y</span>
+```</div>
+                
+                <div class="method-card">
+                    <h4>📚 Explicación Detallada</h4>
+                    <ul>
+                        <li><code>rnorm(100)</code> genera 100 números aleatorios de una distribución normal estándar</li>
+                        <li><code>main</code> establece el título principal del gráfico</li>
+                        <li><code>xlab</code> y <code>ylab</code> definen las etiquetas de los ejes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">3</span>Tipos de Gráficos con el Parámetro type</h2>
+            <p>El argumento <code>type</code> en <code>plot()</code> te permite especificar cómo se deben dibujar los datos. Esto convierte a <code>plot()</code> en una función muy flexible para diferentes tipos de visualizaciones.</p>
+            
+            <div class="plot-types">
+                <div class="plot-type-card">
+                    <code>"p"</code>
+                    <p>Puntos (por defecto)</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"l"</code>
+                    <p>Líneas</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"b"</code>
+                    <p>Puntos y líneas</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"c"</code>
+                    <p>Solo líneas de "b"</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"o"</code>
+                    <p>Puntos y líneas superpuestas</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"h"</code>
+                    <p>Histograma (líneas verticales)</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"s"</code>
+                    <p>Escalera (pasos)</p>
+                </div>
+                <div class="plot-type-card">
+                    <code>"n"</code>
+                    <p>No dibuja (solo ejes)</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>Ejemplo 2: Gráfico de Líneas</h3>
+                <div class="code-block">```{r line_plot}
+<span class="comment"># Generar datos para una secuencia</span>
+x_seq <- 1:10
+y_seq <- x_seq^2  <span class="comment"># Y es el cuadrado de X</span>
+
+<span class="comment"># Crear un gráfico de líneas</span>
+plot(x_seq, y_seq,
+     type = "l",  <span class="comment"># "l" para líneas</span>
+     main = "Gráfico de Líneas",
+     xlab = "Valores de X",
+     ylab = "Valores de Y")
+```</div>
+            </div>
+            
+            <div class="example-box">
+                <h3>Ejemplo 3: Puntos y Líneas</h3>
+                <div class="code-block">```{r points_and_lines}
+x_data <- 1:15
+y_data <- sin(x_data) + runif(15, -0.5, 0.5)  <span class="comment"># Seno con ruido</span>
+
+plot(x_data, y_data,
+     type = "b",      <span class="comment"># Puntos y líneas</span>
+     main = "Gráfico de Puntos y Líneas",
+     xlab = "Índice",
+     ylab = "Valor",
+     pch = 16,        <span class="comment"># Carácter para los puntos</span>
+     col = "blue")    <span class="comment"># Color de puntos y líneas</span>
+```</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">4</span>Personalización Avanzada de la Apariencia</h2>
+            <p><code>plot()</code> ofrece una gran cantidad de argumentos para personalizar la apariencia de tu gráfico hasta el más mínimo detalle.</p>
+            
+            <table class="parameter-table">
+                <thead>
+                    <tr>
+                        <th>Parámetro</th>
+                        <th>Descripción</th>
+                        <th>Ejemplo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>xlim</code>, <code>ylim</code></td>
+                        <td>Límites de los ejes X e Y</td>
+                        <td><code>xlim = c(0, 10)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>col</code></td>
+                        <td>Color de puntos/líneas</td>
+                        <td><code>col = "red"</code> o <code>col = "#FF0000"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>pch</code></td>
+                        <td>Símbolo de los puntos (0-25)</td>
+                        <td><code>pch = 19</code> (círculo sólido)</td>
+                    </tr>
+                    <tr>
+                        <td><code>cex</code></td>
+                        <td>Tamaño de puntos/texto</td>
+                        <td><code>cex = 1.5</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>lwd</code></td>
+                        <td>Ancho de línea</td>
+                        <td><code>lwd = 2</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>lty</code></td>
+                        <td>Tipo de línea</td>
+                        <td><code>lty = 2</code> (punteada)</td>
+                    </tr>
+                    <tr>
+                        <td><code>las</code></td>
+                        <td>Orientación de etiquetas</td>
+                        <td><code>las = 1</code> (horizontal)</td>
+                    </tr>
+                    <tr>
+                        <td><code>bty</code></td>
+                        <td>Tipo de caja del gráfico</td>
+                        <td><code>bty = "l"</code> (forma de L)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="example-box">
+                <h3>Ejemplo 4: Personalización Avanzada</h3>
+                <div class="code-block">```{r advanced_plot_customization}
+set.seed(123)  <span class="comment"># Para reproducibilidad</span>
+x_val <- seq(0, 2*pi, length.out = 50)
+y_val <- cos(x_val) + rnorm(50, sd = 0.1)
+
+plot(x_val, y_val,
+     type = "p",              <span class="comment"># Puntos</span>
+     main = "Función Coseno con Ruido",
+     xlab = "Ángulo (radianes)",
+     ylab = "Coseno(x) + Ruido",
+     xlim = c(0, 2*pi),       <span class="comment"># Límites del eje X</span>
+     ylim = c(-1.5, 1.5),     <span class="comment"># Límites del eje Y</span>
+     col = "darkgreen",       <span class="comment"># Color de los puntos</span>
+     pch = 19,                <span class="comment"># Tipo de punto</span>
+     cex = 1.2,               <span class="comment"># Tamaño de los puntos</span>
+     lwd = 2,                 <span class="comment"># Ancho de línea</span>
+     las = 1,                 <span class="comment"># Orientación de etiquetas</span>
+     bty = "l")               <span class="comment"># Tipo de caja</span>
+
+<span class="comment"># Añadir una línea de regresión</span>
+abline(lm(y_val ~ x_val), col = "red", lty = 2, lwd = 2)
+
+<span class="comment"># Añadir texto al gráfico</span>
+text(x = 1, y = 1.3, labels = "Algunos puntos", col = "purple")
+```</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">5</span>Añadir Elementos a Gráficos Existentes</h2>
+            <p>Una vez que has creado un gráfico con <code>plot()</code>, puedes añadir más elementos utilizando funciones de "bajo nivel" como <code>lines()</code>, <code>points()</code>, <code>abline()</code>, <code>text()</code>, y <code>legend()</code>.</p>
+            
+            <div class="example-box">
+                <h3>Ejemplo 5: Construcción de Gráficos por Capas</h3>
+                <div class="code-block">```{r add_elements}
+<span class="comment"># Crear un lienzo vacío</span>
+plot(NA, xlim = c(0, 10), ylim = c(0, 100),
+     main = "Añadir Elementos a un Gráfico",
+     xlab = "X", ylab = "Y")
+
+<span class="comment"># Añadir primera serie de puntos</span>
+points(x = 1:5, y = (1:5)^2, col = "red", pch = 17, cex = 1.5)
+
+<span class="comment"># Añadir segunda serie con líneas</span>
+points(x = 6:10, y = 100 - (6:10)^2, col = "blue", pch = 15, cex = 1.5)
+lines(x = 6:10, y = 100 - (6:10)^2, col = "blue", lty = 2, lwd = 2)
+
+<span class="comment"># Añadir línea horizontal de referencia</span>
+abline(h = 50, col = "darkgreen", lty = 3, lwd = 3)
+
+<span class="comment"># Añadir leyenda</span>
+legend("topleft",
+       legend = c("Serie 1", "Serie 2", "Línea de Referencia"),
+       col = c("red", "blue", "darkgreen"),
+       pch = c(17, 15, NA),
+       lty = c(NA, 2, 3),
+       lwd = c(NA, 2, 3))
+```</div>
+            </div>
+            
+            <div class="method-card">
+                <h4>🔧 Funciones de Bajo Nivel</h4>
+                <ul>
+                    <li><code>points(x, y, ...)</code> - Añade puntos al gráfico</li>
+                    <li><code>lines(x, y, ...)</code> - Añade líneas conectando puntos</li>
+                    <li><code>abline(h = valor)</code> - Añade línea horizontal</li>
+                    <li><code>abline(v = valor)</code> - Añade línea vertical</li>
+                    <li><code>abline(a, b)</code> - Añade línea con intercepto y pendiente</li>
+                    <li><code>text(x, y, labels)</code> - Añade texto en coordenadas específicas</li>
+                    <li><code>legend()</code> - Añade leyenda al gráfico</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">6</span>Graficación de Funciones Matemáticas con curve()</h2>
+            <p>La función <code>curve()</code> es ideal para graficar funciones matemáticas de una sola variable de manera eficiente. Es especialmente útil cuando quieres visualizar el comportamiento de funciones matemáticas.</p>
+            
+            <div class="example-box">
+                <h3>Ejemplo 6: Graficar una Función Simple</h3>
+                <div class="code-block">```{r plot_function_simple}
+<span class="comment"># Graficar la función y = x^2</span>
+curve(x^2, from = -5, to = 5,
+      main = "Gráfico de la Función f(x) = x²",
+      xlab = "x", ylab = "f(x)",
+      col = "blue", lwd = 2)
+```</div>
+            </div>
+            
+            <div class="example-box">
+                <h3>Ejemplo 7: Múltiples Funciones</h3>
+                <div class="code-block">```{r plot_multiple_functions}
+<span class="comment"># Graficar la función y = sin(x)</span>
+curve(sin(x), from = -2*pi, to = 2*pi,
+      main = "Funciones Trigonométricas",
+      xlab = "x", ylab = "Valor",
+      col = "blue", lwd = 2)
+
+<span class="comment"># Añadir cos(x) al mismo gráfico</span>
+curve(cos(x), add = TRUE, col = "red", lty = 2, lwd = 2)
+
+<span class="comment"># Añadir tan(x)</span>
+curve(tan(x), add = TRUE, col = "green", lty = 3, lwd = 2)
+
+<span class="comment"># Añadir leyenda</span>
+legend("bottomleft",
+       legend = c("sin(x)", "cos(x)", "tan(x)"),
+       col = c("blue", "red", "green"),
+       lty = c(1, 2, 3),
+       lwd = 2)
+```</div>
+            </div>
+            
+            <div class="warning">
+                <strong>⚠️ Importante:</strong> El argumento <code>add = TRUE</code> es crucial para añadir curvas a un gráfico existente. Si lo omites, R creará un nuevo gráfico para cada <code>curve()</code>.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">7</span>Combinación de Datos y Funciones</h2>
+            <p>Una aplicación muy poderosa es combinar datos observados con funciones teóricas o ajustadas, lo cual es fundamental en análisis estadístico y modelado matemático.</p>
+            
+            <div class="example-box">
+                <h3>Ejemplo 8: Datos y Línea de Tendencia</h3>
+                <div class="code-block">```{r data_and_function_plot}
+<span class="comment"># Generar datos simulados con tendencia lineal</span>
+set.seed(456)
+x_obs <- seq(0, 10, length.out = 30)
+y_obs <- 3 * x_obs + 5 + rnorm(30, sd = 5)
+
+<span class="comment"># Crear gráfico de dispersión</span>
+plot(x_obs, y_obs,
+     main = "Datos Observados y Línea de Tendencia",
+     xlab = "Tiempo", ylab = "Medición",
+     pch = 16, col = "darkorange")
+
+<span class="comment"># Ajustar modelo lineal</span>
+modelo_lineal <- lm(y_obs ~ x_obs)
+
+<span class="comment"># Graficar la función estimada</span>
+curve(coef(modelo_lineal)[1] + coef(modelo_lineal)[2] * x, add = TRUE,
+      col = "purple", lwd = 3, lty = 1)
+
+<span class="comment"># Añadir leyenda</span>
+legend("topleft",
+       legend = c("Datos Observados", "Línea de Regresión"),
+       col = c("darkorange", "purple"),
+       pch = c(16, NA),
+       lty = c(NA, 1),
+       lwd = c(NA, 3))
+```</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="step-number">8</span>Configuración de Chunks en R Markdown</h2>
+            <p>Al usar <code>plot()</code> en R Markdown, es importante conocer las opciones de chunk que controlan cómo se muestran los gráficos en el documento final.</p>
+            
+            <div class="chunk-options">
+                <h4>📋 Opciones Principales de Chunk para Gráficos</h4>
+                <ul>
+                    <li><code>fig.width</code>, <code>fig.height</code> - Dimensiones de la figura en pulgadas</li>
+                    <li><code>fig.align</code> - Alineación de la figura: <code>"left"</code>, <code>"center"</code>, <code>"right"</code></li>
+                    <li><code>fig.cap</code> - Título de la figura</li>
+                    <li><code>echo = FALSE</code> - Oculta el código R, solo muestra la gráfica</li>
+                    <li><code>include = FALSE</code> - Oculta tanto el código como la gráfica</li>
+                    <li><code>cache = TRUE</code> - Guarda el resultado para evitar recalcular</li>
+                </ul>
+                
+                <div class="code-block">```{r ejemplo_chunk_options, fig.width=8, fig.height=6, fig.align='center', fig.cap='Ejemplo de gráfico con opciones de chunk'}
+<span class="comment"># Este chunk tiene configuraciones especiales</span>
+plot(1:10, 1:10, 
+     main = "Gráfico con Opciones de Chunk",
+     xlab = "X", ylab = "Y",
+     pch = 19, col = "red", cex = 2)
+```</div>
+            </div>
+            
+            <div class="tip">
+                <strong>Consejo:</strong> Usa <code>knitr::opts_chunk$set()</code> al inicio de tu documento para establecer opciones globales para todos los chunks.
+            </div>
+        </div>
+
+        <div class="concept-box">
+            <h3>🚀 Mejores Prácticas</h3>
+            <ol>
+                <li><strong>Nombres descriptivos para chunks:</strong> Usa nombres significativos como <code>{r analisis_ventas}</code> en lugar de <code>{r chunk1}</code></li>
+                <li><strong>Comentarios en el código:</strong> Documenta tu código para que sea comprensible</li>
+                <li><strong>Consistencia visual:</strong> Mantén un estilo coherente en todos tus gráficos</li>
+                <li><strong>Tamaños apropiados:</strong> Ajusta <code>fig.width</code> y <code>fig.height</code> según el contenido</li>
+                <li><strong>Colores accesibles:</strong> Usa paletas de colores que sean distinguibles para todos</li>
+                <li><strong>Etiquetas claras:</strong> Siempre incluye títulos y etiquetas de ejes descriptivos</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>📚 Recursos Adicionales</h2>
+            <p>La función <code>plot()</code> es solo el comienzo. R ofrece muchas más herramientas de visualización que puedes explorar:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+                <div class="method-card">
+                    <h4>📊 Gráficos Estadísticos</h4>
+                    <ul>
+                        <li><code>hist()</code> - Histogramas</li>
+                        <li><code>boxplot()</code> - Diagramas de caja</li>
+                        <li><code>barplot()</code> - Gráficos de barras</li>
+                        <li><code>pie()</code> - Gráficos de pastel</li>
+                    </ul>
+                </div>
+                <div class="method-card">
+                    <h4>🎨 Paquetes Avanzados</h4>
+                    <ul>
+                        <li><code>ggplot2</code> - Gramática de gráficos</li>
+                        <li><code>lattice</code> - Gráficos multivariados</li>
+                        <li><code>plotly</code> - Gráficos interactivos</li>
+                        <li><code>highcharter</code> - Visualizaciones web</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>🎓 Conclusión</h3>
+            <p>La función <code>plot()</code> en R es una herramienta poderosa y versátil para crear visualizaciones. 
+                Su integración con R Markdown permite crear <br> documentos dinámicos con gráficos profesionales. 
+                <br> La clave está en experimentar con los diferentes parámetros y combinar las funciones de bajo nivel para
+                 crear exactamente la visualización que necesitas. ¡Practica con estos ejemplos y pronto estarás creando 
+                 visualizaciones impresionantes!</p>
+        </div>
+    </div>
+</body>
+</html>
