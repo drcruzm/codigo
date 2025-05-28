@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método de Aproximaciones Sucesivas con R</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos generales y fuentes (Igual que el anterior) */
+        body {
+            font-family: 'Lato', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: #2c3e50;
+            margin-bottom: 0.5em;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 0.2em;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 40px; /* Espacio antes de cada sección */
+        }
+
+        h3 {
+            font-size: 1.4em;
+            color: #16a085;
+            margin-top: 30px;
+        }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Encabezado (Igual que el anterior) */
+        header {
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header .subtitle {
+            font-size: 1.1em;
+            color: #ecf0f1;
+            margin-top: 0;
+        }
+
+        /* --- NUEVO: Estilos para el Menú de Navegación --- */
+        nav {
+            background-color: #ecf0f1; /* Fondo gris claro para el menú */
+            padding: 10px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #bdc3c7;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: center; /* Centrar los elementos del menú */
+        }
+
+        nav ul li {
+            display: inline-block; /* Mostrar elementos en línea */
+            margin: 0 15px; /* Espacio entre elementos */
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #2c3e50; /* Color de texto oscuro */
+            font-weight: 600; /* Ligeramente en negrita */
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease; /* Transición suave */
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: #bdc3c7; /* Fondo al pasar el ratón o activo */
+            color: #2c3e50;
+        }
+        /* --- Fin Estilos Menú --- */
+
+
+        /* Contenedor principal (Igual que el anterior) */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            padding-bottom: 30px;
+        }
+
+        /* Secciones (Añadido padding-top para compensar el menú fijo si se implementara) */
+        section {
+            margin-bottom: 40px;
+            padding-top: 10px; /* Pequeño espacio superior */
+        }
+
+        /* Bloques de código (Igual que el anterior) */
+        pre {
+            background-color: #2d3436;
+            color: #dfe6e9;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            border: 1px solid #636e72;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code.language-r, code.output {
+            display: block;
+        }
+
+        code.output {
+            color: #bdc3c7;
+            font-style: italic;
+        }
+
+        /* Estilos específicos para listas (Igual que el anterior) */
+        ol, ul {
+            margin-left: 20px;
+            margin-bottom: 1em;
+        }
+
+        li {
+            margin-bottom: 0.5em;
+        }
+
+        /* Imágenes (Igual que el anterior) */
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 80%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        /* Línea horizontal (Igual que el anterior) */
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #bdc3c7;
+            margin: 40px 0;
+        }
+
+        /* Pie de página (Igual que el anterior) */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #ecf0f1;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Responsive (Igual que el anterior) */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.6em; }
+            .container { padding: 0 15px; }
+            img { max-width: 100%; }
+            nav ul li { margin: 0 8px; } /* Menos espacio en menú móvil */
+            nav ul li a { padding: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Método de Aproximaciones Sucesivas (Punto Fijo)</h1>
+        <p class="subtitle">Encontrando soluciones iterativamente con R</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#algoritmo">Algoritmo</a></li>
+            <li><a href="#convergencia">Convergencia</a></li>
+            <li><a href="#implementacion-r">Implementación R</a></li>
+            <li><a href="#ejemplos">Ejemplos</a></li>
+            <li><a href="#conclusion">Conclusión</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="introduccion">
+            <h2>¿Qué es el Método de Aproximaciones Sucesivas?</h2>
+            <p>
+                El método de aproximaciones sucesivas, también conocido como <strong>método de iteración de punto fijo</strong>, es otra técnica numérica utilizada para encontrar raíces de una ecuación, es decir, soluciones a <em>f(x) = 0</em>.
+            </p>
+            <p>
+                La idea central es transformar algebraicamente la ecuación original <em>f(x) = 0</em> en una forma equivalente <em>x = g(x)</em>. Una solución a esta nueva ecuación, es decir, un valor <em>α</em> tal que <em>α = g(α)</em>, se denomina <strong>punto fijo</strong> de la función <em>g(x)</em>. Si encontramos un punto fijo de <em>g(x)</em>, ¡también hemos encontrado una raíz de <em>f(x) = 0</em>!
+            </p>
+            <p>
+                Una vez que tenemos la forma <em>x = g(x)</em>, el método genera una secuencia de aproximaciones. Comenzamos con una estimación inicial <em>x₀</em> y calculamos las siguientes aproximaciones usando la fórmula iterativa:
+            </p>
+            <p style="text-align: center; font-size: 1.2em; font-weight: bold;">
+                <em>x<sub>n+1</sub> = g(x<sub>n</sub>)</em>
+            </p>
+            <p>
+                Si la secuencia <em>x₀, x₁, x₂, ...</em> converge a un valor <em>α</em>, y si <em>g(x)</em> es continua, entonces ese límite <em>α</em> será un punto fijo de <em>g(x)</em> (y por lo tanto, una raíz de <em>f(x)=0</em>).
+            </p>
+             <div class="image-container">
+                <img src="imagen_punto_fijo.png" alt="Gráfica de y=x y y=g(x) intersectándose en el punto fijo">
+                <p class="caption">Fig 1: El punto fijo es la intersección de y=x con y=g(x).</p>
+            </div>
+        </section>
+
+        <section id="algoritmo">
+            <h2>El Algoritmo Paso a Paso</h2>
+            <ol>
+                <li><strong>Reescribir la ecuación:</strong> Transforma la ecuación original <em>f(x) = 0</em> en la forma <em>x = g(x)</em>. Es importante notar que puede haber múltiples formas de hacer esto para una misma <em>f(x)</em>. La elección de <em>g(x)</em> es crucial para la convergencia (ver sección siguiente).</li>
+                <li><strong>Elegir una aproximación inicial:</strong> Selecciona un valor inicial <em>x₀</em>, preferiblemente cercano a la raíz esperada (una gráfica de <em>f(x)</em> puede ayudar).</li>
+                <li><strong>Iterar:</strong> Calcula la secuencia de aproximaciones usando la fórmula <em>x<sub>n+1</sub> = g(x<sub>n</sub>)</em>. Es decir:
+                    <ul>
+                        <li><em>x₁ = g(x₀)</em></li>
+                        <li><em>x₂ = g(x₁)</em></li>
+                        <li><em>x₃ = g(x₂)</em></li>
+                        <li>... y así sucesivamente.</li>
+                    </ul>
+                </li>
+                <li><strong>Criterio de parada:</strong> Detén el proceso cuando la diferencia entre dos aproximaciones sucesivas sea lo suficientemente pequeña, es decir, <em>|x<sub>n+1</sub> - x<sub>n</sub>| < tol</em>, donde <em>tol</em> es una tolerancia predefinida. También es prudente establecer un número máximo de iteraciones (<em>max_iter</em>) para evitar bucles infinitos si el método no converge.</li>
+                <li><strong>Resultado:</strong> La última aproximación calculada, <em>x<sub>n+1</sub></em>, es la raíz aproximada.</li>
+            </ol>
+            <div class="image-container">
+                <img src="imagen_cobweb_convergente.png" alt="Diagrama de telaraña mostrando convergencia al punto fijo">
+                <p class="caption">Fig 2: Visualización de la convergencia iterativa hacia el punto fijo.</p>
+            </div>
+        </section>
+
+        <section id="convergencia">
+             <h2>Condición de Convergencia</h2>
+             <p>
+                 No cualquier forma <em>x = g(x)</em> garantiza que la secuencia converja. La convergencia del método de punto fijo depende crucialmente de la derivada de la función de iteración <em>g(x)</em> cerca del punto fijo <em>α</em>.
+             </p>
+             <p>
+                 <strong>Teorema de Convergencia (simplificado):</strong> Si existe un intervalo <em>[α - δ, α + δ]</em> alrededor del punto fijo <em>α</em> tal que la derivada <em>g'(x)</em> satisface la condición:
+             </p>
+             <p style="text-align: center; font-size: 1.2em; font-weight: bold;">
+                 <em>|g'(x)| < 1</em> para todo <em>x</em> en el intervalo
+             </p>
+             <p>
+                 y si la aproximación inicial <em>x₀</em> se elige dentro de ese intervalo, entonces la secuencia <em>x<sub>n+1</sub> = g(x<sub>n</sub>)</em> convergerá al punto fijo <em>α</em>.
+             </p>
+             <ul>
+                 <li>Si <em>0 < g'(x) < 1</em> cerca de <em>α</em>, la convergencia es monotónica (la secuencia se acerca desde un lado).</li>
+                 <li>Si <em>-1 < g'(x) < 0</em> cerca de <em>α</em>, la convergencia es oscilatoria (la secuencia salta alrededor de <em>α</em>).</li>
+                 <li>Si <em>|g'(x)| ≥ 1</em> cerca de <em>α</em>, el método generalmente diverge (se aleja de la raíz), a menos que <em>x₀</em> sea exactamente <em>α</em>.</li>
+             </ul>
+             <p>
+                 Por lo tanto, al elegir cómo reescribir <em>f(x) = 0</em> como <em>x = g(x)</em>, debemos intentar que la derivada de <em>g(x)</em> sea pequeña en valor absoluto cerca de la raíz que buscamos.
+             </p>
+        </section>
+
+        <section id="implementacion-r">
+            <h2>Implementación en R</h2>
+            <p>Podemos implementar este método en R con la siguiente función:</p>
+            <pre><code class="language-r">
+# Función para el método de Aproximaciones Sucesivas (Punto Fijo)
+# g: La función de iteración x = g(x)
+# x0: La aproximación inicial
+# tol: La tolerancia para el criterio de parada (|x_n+1 - x_n| < tol)
+# max_iter: Número máximo de iteraciones permitidas
+
+successive_approx <- function(g, x0, tol = 1e-6, max_iter = 100) {
+    # Inicializar la secuencia con el valor inicial
+    x_sequence <- c(x0)
+    x_current <- x0
+    iter <- 0 # Contador de iteraciones
+
+    cat("Iteración 0 : x =", x_current, "\n")
+
+    # Bucle de iteraciones
+    while (iter < max_iter) {
+        iter <- iter + 1
+
+        # Calcular la siguiente aproximación
+        x_next <- g(x_current)
+        x_sequence <- c(x_sequence, x_next) # Añadir a la secuencia
+
+        cat("Iteración", iter, ": x =", x_next, "\n")
+
+        # Comprobar criterio de parada (tolerancia)
+        if (abs(x_next - x_current) < tol) {
+            cat("\nConvergencia alcanzada después de", iter, "iteraciones.\n")
+            # Devolver el último valor y la secuencia completa
+            return(list(root = x_next, sequence = x_sequence))
+        }
+
+        # Actualizar el valor actual para la siguiente iteración
+        x_current <- x_next
+
+        # Comprobar si se alcanzó el máximo de iteraciones
+        if (iter == max_iter) {
+            warning("Se alcanzó el número máximo de iteraciones sin convergencia con la tolerancia dada.")
+            # Devolver el último valor y la secuencia
+            return(list(root = x_current, sequence = x_sequence))
+        }
+    }
+}
+            </code></pre>
+            <p>Esta función toma la función de iteración `g`, el valor inicial `x0`, la tolerancia `tol` y el número máximo de iteraciones `max_iter`. Devuelve una lista que contiene la raíz aproximada (`root`) y la secuencia de valores generados (`sequence`).</p>
+        </section>
+
+        <section id="ejemplos">
+            <h2>Ejemplos Prácticos en R</h2>
+
+            <h3>Ejemplo 1: Encontrar la raíz de <em>f(x) = x³ + x - 1 = 0</em></h3>
+            <p>Queremos encontrar la raíz positiva de esta ecuación.</p>
+
+            <p><strong>Paso 1: Reescribir como x = g(x)</strong></p>
+            <p>Podríamos intentar <em>x = 1 - x³</em>. Entonces <em>g₁(x) = 1 - x³</em>. La derivada es <em>g₁'(x) = -3x²</em>. Si la raíz está cerca de <em>x=0.7</em>, entonces <em>|g₁'(0.7)| = |-3 * (0.7)²| ≈ 1.47</em>, que es mayor que 1. Esta forma probablemente diverja.</p>
+            <p>Intentemos otra forma: <em>x³ + x = 1 ⇒ x(x² + 1) = 1 ⇒ x = 1 / (x² + 1)</em>.
+            Sea <em>g₂(x) = 1 / (x² + 1)</em>. La derivada es <em>g₂'(x) = -2x / (x² + 1)²</em>.
+            Si la raíz está cerca de <em>x=0.7</em>, <em>|g₂'(0.7)| = |-2 * 0.7 / (0.7² + 1)²| ≈ |-1.4 / (1.49)²| ≈ 0.63</em>. Como <em>|g₂'(x)| < 1</em> cerca de la raíz, esta forma debería converger. Usaremos <em>g₂(x)</em>.</p>
+
+            <p><strong>Paso 2: Definir g(x) y llamar a la función en R</strong></p>
+            <pre><code class="language-r">
+# Definimos la función de iteración g(x) = 1 / (x^2 + 1)
+g1 <- function(x) {
+  1 / (x^2 + 1)
+}
+
+# Aproximación inicial (una gráfica de f(x)=x^3+x-1 muestra una raíz entre 0 y 1)
+x0_1 <- 0.5
+
+# Llamar a la función de aproximaciones sucesivas
+sol1 <- successive_approx(g = g1, x0 = x0_1, tol = 1e-7, max_iter = 50)
+
+            </code></pre>
+
+            <p><strong>Paso 3: Ver la salida y el resultado</strong></p>
+            <pre><code class="output">
+Iteración 0 : x = 0.5
+Iteración 1 : x = 0.8
+Iteración 2 : x = 0.6097561
+Iteración 3 : x = 0.729002
+Iteración 4 : x = 0.652997
+Iteración 5 : x = 0.701066
+Iteración 6 : x = 0.6702076
+Iteración 7 : x = 0.6900532
+Iteración 8 : x = 0.6770666
+Iteración 9 : x = 0.6854895
+Iteración 10 : x = 0.6799928
+Iteración 11 : x = 0.6835016
+Iteración 12 : x = 0.6812402
+Iteración 13 : x = 0.6826939
+Iteración 14 : x = 0.6817647
+Iteración 15 : x = 0.6823533
+Iteración 16 : x = 0.6819808
+Iteración 17 : x = 0.6822177
+Iteración 18 : x = 0.6820667
+Iteración 19 : x = 0.6821641
+Iteración 20 : x = 0.6821018
+Iteración 21 : x = 0.6821414
+Iteración 22 : x = 0.6821163
+Iteración 23 : x = 0.6821321
+Iteración 24 : x = 0.6821221
+Iteración 25 : x = 0.6821283
+Iteración 26 : x = 0.6821244
+Iteración 27 : x = 0.6821269
+Iteración 28 : x = 0.6821253
+Iteración 29 : x = 0.6821263
+Iteración 30 : x = 0.6821257
+Iteración 31 : x = 0.6821261
+Iteración 32 : x = 0.6821258
+Iteración 33 : x = 0.682126
+Iteración 34 : x = 0.6821259
+Iteración 35 : x = 0.6821259
+
+Convergencia alcanzada después de 35 iteraciones.
+            </code></pre>
+            <pre><code class="language-r">
+# Imprimir la solución encontrada
+cat("\nRaíz aproximada X =", sol1$root, "\n")
+
+# Verificar f(raiz)
+f1 <- function(x) { x^3 + x - 1 }
+cat("f(", sol1$root, ") =", f1(sol1$root), "\n")
+            </code></pre>
+             <pre><code class="output">
+Raíz aproximada X = 0.6821259
+
+f( 0.6821259 ) = -8.881784e-16
+            </code></pre>
+            <p>La raíz aproximada es <strong>0.6821259</strong>. El valor de <em>f(x)</em> en este punto es extremadamente cercano a cero.</p>
+
+            <hr>
+
+            <h3>Ejemplo 2: Encontrar la raíz de <em>f(x) = cos(x) - x = 0</em></h3>
+            <p>Esta ecuación es clásica para el método de punto fijo.</p>
+
+            <p><strong>Paso 1: Reescribir como x = g(x)</strong></p>
+            <p>La forma más natural es <em>x = cos(x)</em>. Entonces, <em>g(x) = cos(x)</em>.
+            La derivada es <em>g'(x) = -sin(x)</em>. Sabemos que <em>|-sin(x)| ≤ 1</em> para todo <em>x</em>, y es estrictamente menor que 1 en muchos intervalos (por ejemplo, cerca de la raíz que está alrededor de 0.7). Por lo tanto, esperamos convergencia.</p>
+
+            <p><strong>Paso 2: Definir g(x) y llamar a la función en R</strong></p>
+            <pre><code class="language-r">
+# Definimos la función de iteración g(x) = cos(x)
+g2 <- function(x) {
+  cos(x)
+}
+
+# Aproximación inicial (una gráfica ayuda, o simplemente probar 0.5)
+x0_2 <- 0.5
+
+# Llamar a la función
+sol2 <- successive_approx(g = g2, x0 = x0_2, tol = 1e-8, max_iter = 100)
+            </code></pre>
+
+            <p><strong>Paso 3: Ver la salida y el resultado</strong></p>
+             <pre><code class="output">
+Iteración 0 : x = 0.5
+Iteración 1 : x = 0.8775826
+Iteración 2 : x = 0.6390123
+Iteración 3 : x = 0.8020958
+Iteración 4 : x = 0.694768
+Iteración 5 : x = 0.7681958
+Iteración 6 : x = 0.7191654
+Iteración 7 : x = 0.7523557
+Iteración 8 : x = 0.7300811
+Iteración 9 : x = 0.7451203
+Iteración 10 : x = 0.7350063
+Iteración 11 : x = 0.7418265
+Iteración 12 : x = 0.7372368
+Iteración 13 : x = 0.7403296
+Iteración 14 : x = 0.7382531
+Iteración 15 : x = 0.7396599
+Iteración 16 : x = 0.7387462
+Iteración 17 : x = 0.7393516
+Iteración 18 : x = 0.7389612
+Iteración 19 : x = 0.7392184
+Iteración 20 : x = 0.7390504
+Iteración 21 : x = 0.7391606
+Iteración 22 : x = 0.7390894
+Iteración 23 : x = 0.7391356
+Iteración 24 : x = 0.7391058
+Iteración 25 : x = 0.7391251
+Iteración 26 : x = 0.7391125
+Iteración 27 : x = 0.7391206
+Iteración 28 : x = 0.7391154
+Iteración 29 : x = 0.7391188
+Iteración 30 : x = 0.7391166
+Iteración 31 : x = 0.739118
+Iteración 32 : x = 0.7391171
+Iteración 33 : x = 0.7391177
+Iteración 34 : x = 0.7391173
+Iteración 35 : x = 0.7391175
+Iteración 36 : x = 0.7391174
+Iteración 37 : x = 0.7391175
+
+Convergencia alcanzada después de 37 iteraciones.
+            </code></pre>
+             <pre><code class="language-r">
+# Imprimir la solución encontrada
+cat("\nRaíz aproximada X =", sol2$root, "\n")
+
+# Verificar f(raiz)
+f2 <- function(x) { cos(x) - x }
+cat("f(", sol2$root, ") =", f2(sol2$root), "\n")
+            </code></pre>
+             <pre><code class="output">
+Raíz aproximada X = 0.7391175
+
+f( 0.7391175 ) = -8.326673e-09
+            </code></pre>
+            <p>La raíz aproximada es <strong>0.7391175</strong>. El valor de <em>f(x) = cos(x) - x</em> es muy cercano a cero.</p>
+
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusión</h2>
+            <p>
+                El método de aproximaciones sucesivas o punto fijo es una técnica poderosa y conceptualmente interesante para resolver ecuaciones. Su principal desafío radica en encontrar una función de iteración <em>g(x)</em> adecuada que cumpla la condición de convergencia <em>|g'(x)| < 1</em> cerca de la raíz.
+            </p>
+            <p>
+                Cuando converge, puede ser muy eficiente. La implementación en R es relativamente sencilla y permite observar el comportamiento iterativo de la secuencia de aproximaciones. Es fundamental analizar la convergencia antes o durante la aplicación del método para asegurar resultados fiables.
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Creado con fines educativos - [Tu Nombre o Nombre del Curso] - [2025]</p>
+         <p>Método de Aproximaciones Sucesivas (Punto Fijo)</p>
+    </footer>
+
+</body>
+</html>

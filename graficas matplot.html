@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualización de Múltiples Gráficos en R: plot vs. matplot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo base para usar la fuente Inter */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth; /* Desplazamiento suave al hacer clic en los enlaces */
+        }
+        /* Estilo para bloques de código */
+        pre {
+            background-color: #f3f4f6; /* gris claro */
+            border: 1px solid #d1d5db; /* gris medio */
+            border-radius: 0.375rem; /* esquinas redondeadas */
+            padding: 1rem; /* relleno interno */
+            overflow-x: auto; /* scroll horizontal si el código es largo */
+            font-family: monospace; /* fuente monoespaciada para código */
+            font-size: 0.875rem; /* tamaño de fuente ligeramente más pequeño */
+            line-height: 1.25rem; /* interlineado */
+        }
+        /* Estilo para el código inline */
+        code:not(pre code) {
+            font-family: monospace;
+            font-size: 0.9em; /* Ligeramente más pequeño que el texto normal */
+            background-color: #e5e7eb; /* gris muy claro */
+            padding: 0.1em 0.3em;
+            border-radius: 0.25rem;
+            color: #1f2937; /* color de texto oscuro */
+        }
+        /* Estilo para resaltar comentarios en el código (simulado) */
+        .code-comment {
+            color: #6b7280; /* gris oscuro */
+            font-style: italic;
+        }
+         /* Estilo para resaltar funciones en el código (simulado) */
+        .code-function {
+            color: #1d4ed8; /* azul */
+            font-weight: bold;
+        }
+         /* Estilo para resaltar strings en el código (simulado) */
+        .code-string {
+            color: #059669; /* verde */
+        }
+         /* Estilo para resaltar números en el código (simulado) */
+        .code-number {
+            color: #c2410c; /* naranja */
+        }
+         /* Estilo para resaltar asignaciones en el código (simulado) */
+        .code-assignment {
+            color: #7e22ce; /* morado */
+        }
+        /* Ajuste para el anclaje del encabezado fijo (opcional) */
+        section[id] {
+          scroll-margin-top: 80px; /* Ajusta este valor según la altura de tu encabezado/menú fijo */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-blue-700 text-white p-4 shadow-md sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold">Gráficos en R</h1>
+            <nav>
+                <ul class="flex space-x-4">
+                    <li><a href="#plot-lines" class="hover:text-blue-200">Plot + Lines</a></li>
+                    <li><a href="#matplot" class="hover:text-blue-200">Matplot</a></li>
+                    <li><a href="#comparacion" class="hover:text-blue-200">Comparación</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-lg shadow-md mt-8">
+
+        <h1 class="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-700">Visualización de Múltiples Gráficos en R</h1>
+
+        <p class="mb-6 text-lg">
+            En R, existen varias formas de mostrar múltiples conjuntos de datos o gráficos en una sola visualización. Aquí exploraremos dos métodos comunes: usar la función <code>plot</code> seguida de múltiples llamadas a <code>lines</code>, y usar la función <code>matplot</code>.
+        </p>
+
+        <section id="plot-lines" class="mb-8 pt-4"> 
+            <h2 class="text-xl md:text-2xl font-bold mb-4 border-b pb-2 border-gray-300">Método 1: <code>plot</code> + <code>lines</code></h2>
+            <p class="mb-4">
+                Este enfoque implica crear un gráfico base vacío o con el primer conjunto de datos usando <code>plot</code>, y luego añadir las líneas correspondientes a los otros conjuntos de datos usando la función <code>lines</code> repetidamente.
+            </p>
+            <p class="mb-4">
+                La función <code>plot</code> inicial establece el lienzo, los ejes y otros parámetros generales. Los parámetros importantes incluyen:
+            </p>
+            <ul class="list-disc list-inside mb-4 pl-4 space-y-1">
+                <li><code>xlim</code>: Define los límites del eje X.</li>
+                <li><code>ylim</code>: Define los límites del eje Y.</li>
+                <li><code>xlab</code>: Etiqueta para el eje X.</li>
+                <li><code>ylab</code>: Etiqueta para el eje Y.</li>
+                <li><code>main</code>: Título principal del gráfico.</li>
+                <li><code>type="n"</code>: Indica que no se grafiquen puntos inicialmente, solo se preparen los ejes.</li>
+            </ul>
+
+            <h3 class="text-lg font-semibold mb-2">Ejemplo de Código R:</h3>
+            <pre><code class="language-r">
+<span class="code-comment"># 1. Definir datos de ejemplo</span>
+x <span class="code-assignment">&lt;-</span> <span class="code-function">seq</span>(<span class="code-number">-5</span>, <span class="code-number">5</span>, by <span class="code-assignment">=</span> <span class="code-number">0.01</span>)
+y <span class="code-assignment">&lt;-</span> <span class="code-function">dnorm</span>(x) <span class="code-comment"># Densidad normal estándar</span>
+z <span class="code-assignment">&lt;-</span> <span class="code-function">dt</span>(x, df <span class="code-assignment">=</span> <span class="code-number">3</span>) <span class="code-comment"># Densidad t de Student con 3 grados de libertad</span>
+w <span class="code-assignment">&lt;-</span> <span class="code-function">dcauchy</span>(x) <span class="code-comment"># Densidad de Cauchy</span>
+
+<span class="code-comment"># 2. Establecer parámetros gráficos (opcional pero recomendado)</span>
+<span class="code-function">par</span>(mar <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">5</span>, <span class="code-number">4</span>, <span class="code-number">4</span>, <span class="code-number">2</span>) + <span class="code-number">0.1</span>) <span class="code-comment"># Ajustar márgenes</span>
+
+<span class="code-comment"># 3. Crear el gráfico base (sin datos visibles inicialmente)</span>
+<span class="code-function">plot</span>(x, y, type <span class="code-assignment">=</span> <span class="code-string">"n"</span>, <span class="code-comment"># 'n' para no dibujar puntos/líneas aún</span>
+     xlab <span class="code-assignment">=</span> <span class="code-string">"Eje Horizontal (x)"</span>,
+     ylab <span class="code-assignment">=</span> <span class="code-string">"Eje Vertical (Densidad)"</span>,
+     main <span class="code-assignment">=</span> <span class="code-string">"Comparación de Densidades (plot + lines)"</span>,
+     xlim <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">-5</span>, <span class="code-number">5</span>), <span class="code-comment"># Límites eje x</span>
+     ylim <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">0</span>, <span class="code-number">0.45</span>)) <span class="code-comment"># Límites eje y</span>
+
+<span class="code-comment"># 4. Añadir las líneas para cada conjunto de datos</span>
+<span class="code-function">lines</span>(x, y, col <span class="code-assignment">=</span> <span class="code-string">"blue"</span>, lty <span class="code-assignment">=</span> <span class="code-number">1</span>, lwd <span class="code-assignment">=</span> <span class="code-number">2</span>) <span class="code-comment"># Línea para y (Normal)</span>
+<span class="code-function">lines</span>(x, z, col <span class="code-assignment">=</span> <span class="code-string">"red"</span>, lty <span class="code-assignment">=</span> <span class="code-number">2</span>, lwd <span class="code-assignment">=</span> <span class="code-number">2</span>)  <span class="code-comment"># Línea para z (t-Student)</span>
+<span class="code-function">lines</span>(x, w, col <span class="code-assignment">=</span> <span class="code-string">"darkgreen"</span>, lty <span class="code-assignment">=</span> <span class="code-number">3</span>, lwd <span class="code-assignment">=</span> <span class="code-number">2</span>) <span class="code-comment"># Línea para w (Cauchy)</span>
+
+<span class="code-comment"># 5. Añadir una leyenda</span>
+<span class="code-function">legend</span>(<span class="code-string">"topright"</span>, <span class="code-comment"># Posición de la leyenda</span>
+       legend <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-string">"Normal"</span>, <span class="code-string">"t(df=3)"</span>, <span class="code-string">"Cauchy"</span>), <span class="code-comment"># Textos</span>
+       col <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-string">"blue"</span>, <span class="code-string">"red"</span>, <span class="code-string">"darkgreen"</span>), <span class="code-comment"># Colores correspondientes</span>
+       lty <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>), <span class="code-comment"># Tipos de línea correspondientes</span>
+       lwd <span class="code-assignment">=</span> <span class="code-number">2</span>, <span class="code-comment"># Grosor de línea</span>
+       cex <span class="code-assignment">=</span> <span class="code-number">0.8</span>, <span class="code-comment"># Tamaño del texto de la leyenda</span>
+       title <span class="code-assignment">=</span> <span class="code-string">"Distribución"</span>) <span class="code-comment"># Título de la leyenda</span>
+
+<span class="code-comment"># 6. Añadir una línea de referencia (opcional)</span>
+<span class="code-function">abline</span>(h <span class="code-assignment">=</span> <span class="code-number">0</span>, col <span class="code-assignment">=</span> <span class="code-string">"gray"</span>, lty <span class="code-assignment">=</span> <span class="code-string">"dashed"</span>) <span class="code-comment"># Línea horizontal en y=0</span>
+            </code></pre>
+            <p class="mt-4">
+                El resultado es un gráfico que muestra las tres densidades superpuestas, cada una con un color y tipo de línea diferente, facilitando su comparación. La función <code>legend</code> es crucial para identificar qué línea corresponde a cada conjunto de datos.
+            </p>
+        </section>
+
+        <section id="matplot" class="mb-8 pt-4"> {/* Añadido id y padding top */}
+            <h2 class="text-xl md:text-2xl font-bold mb-4 border-b pb-2 border-gray-300">Método 2: <code>matplot</code></h2>
+            <p class="mb-4">
+                La función <code>matplot</code> está diseñada específicamente para graficar las columnas de una matriz contra las columnas de otra (o contra un vector común). Es una forma más directa de lograr el mismo objetivo que <code>plot</code> + <code>lines</code> cuando los datos están organizados en una matriz.
+            </p>
+            <p class="mb-4">
+                Primero, necesitamos organizar nuestros datos en una matriz. La función <code>matrix</code> o <code>cbind</code> (column bind) son útiles para esto.
+            </p>
+
+            <h3 class="text-lg font-semibold mb-2">Ejemplo de Código R:</h3>
+            <pre><code class="language-r">
+<span class="code-comment"># 1. Datos (usamos los mismos x, y, z, w de antes)</span>
+x <span class="code-assignment">&lt;-</span> <span class="code-function">seq</span>(<span class="code-number">-5</span>, <span class="code-number">5</span>, by <span class="code-assignment">=</span> <span class="code-number">0.01</span>)
+y <span class="code-assignment">&lt;-</span> <span class="code-function">dnorm</span>(x)
+z <span class="code-assignment">&lt;-</span> <span class="code-function">dt</span>(x, df <span class="code-assignment">=</span> <span class="code-number">3</span>)
+w <span class="code-assignment">&lt;-</span> <span class="code-function">dcauchy</span>(x)
+
+<span class="code-comment"># 2. Crear una matriz con los datos a graficar (las 'y')</span>
+<span class="code-comment"># Usaremos cbind para combinar y, z, w como columnas</span>
+Y_matrix <span class="code-assignment">&lt;-</span> <span class="code-function">cbind</span>(y, z, w)
+<span class="code-function">colnames</span>(Y_matrix) <span class="code-assignment">&lt;-</span> <span class="code-function">c</span>(<span class="code-string">"Normal"</span>, <span class="code-string">"t(df=3)"</span>, <span class="code-string">"Cauchy"</span>) <span class="code-comment"># Nombres de columnas (útil para leyenda)</span>
+
+<span class="code-comment"># Otra forma de crear la matriz (como en el texto original)</span>
+<span class="code-comment"># X_matrix <- matrix(c(x, y, z, w), ncol = 4) # Ojo: esto mezcla x con las y</span>
+<span class="code-comment"># Para matplot, usualmente queremos x separado</span>
+
+<span class="code-comment"># 3. Graficar usando matplot</span>
+<span class="code-comment"># Graficamos las columnas de Y_matrix contra el vector x</span>
+<span class="code-function">matplot</span>(x, Y_matrix, type <span class="code-assignment">=</span> <span class="code-string">"l"</span>, <span class="code-comment"># 'l' para líneas</span>
+        xlab <span class="code-assignment">=</span> <span class="code-string">"Eje Horizontal (x)"</span>,
+        ylab <span class="code-assignment">=</span> <span class="code-string">"Eje Vertical (Densidad)"</span>,
+        main <span class="code-assignment">=</span> <span class="code-string">"Comparación de Densidades (matplot)"</span>,
+        xlim <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">-5</span>, <span class="code-number">5</span>),
+        ylim <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">0</span>, <span class="code-number">0.45</span>),
+        col <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-string">"blue"</span>, <span class="code-string">"red"</span>, <span class="code-string">"darkgreen"</span>), <span class="code-comment"># Colores para cada columna</span>
+        lty <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>), <span class="code-comment"># Tipos de línea para cada columna</span>
+        lwd <span class="code-assignment">=</span> <span class="code-number">2</span>) <span class="code-comment"># Grosor de línea</span>
+
+<span class="code-comment"># 4. Añadir la leyenda (usando los nombres de columna)</span>
+<span class="code-function">legend</span>(<span class="code-string">"topright"</span>,
+       legend <span class="code-assignment">=</span> <span class="code-function">colnames</span>(Y_matrix), <span class="code-comment"># Usar nombres de columna</span>
+       col <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-string">"blue"</span>, <span class="code-string">"red"</span>, <span class="code-string">"darkgreen"</span>),
+       lty <span class="code-assignment">=</span> <span class="code-function">c</span>(<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>),
+       lwd <span class="code-assignment">=</span> <span class="code-number">2</span>,
+       cex <span class="code-assignment">=</span> <span class="code-number">0.8</span>,
+       title <span class="code-assignment">=</span> <span class="code-string">"Distribución"</span>)
+
+<span class="code-comment"># 5. Añadir línea de referencia (opcional)</span>
+<span class="code-function">abline</span>(h <span class="code-assignment">=</span> <span class="code-number">0</span>, col <span class="code-assignment">=</span> <span class="code-string">"gray"</span>, lty <span class="code-assignment">=</span> <span class="code-string">"dashed"</span>)
+            </code></pre>
+            <p class="mt-4">
+                Como puedes ver, <code>matplot</code> requiere menos líneas de código para graficar múltiples series si ya están en una matriz. Los parámetros como <code>col</code>, <code>lty</code>, y <code>lwd</code> aceptan vectores, donde cada elemento del vector se aplica a una columna de la matriz graficada. Si proporcionas menos valores de los necesarios (por ejemplo, solo un color), R los reciclará.
+            </p>
+        </section>
+
+        <section id="comparacion" class="pt-4"> {/* Añadido id y padding top */}
+            <h2 class="text-xl md:text-2xl font-bold mb-4 border-b pb-2 border-gray-300">Comparación y Cuándo Usar Cada Método</h2>
+            <ul class="list-disc list-inside mb-4 pl-4 space-y-2">
+                <li>Usa <code>plot</code> + <code>lines</code> cuando:
+                    <ul class="list-circle list-inside ml-6 mt-1">
+                        <li>Los datos no están naturalmente en una estructura matricial.</li>
+                        <li>Necesitas un control muy fino sobre cómo se añade cada línea o conjunto de puntos.</li>
+                        <li>Estás añadiendo elementos gráficos diversos (no solo líneas) al mismo plot.</li>
+                    </ul>
+                </li>
+                 <li>Usa <code>matplot</code> cuando:
+                    <ul class="list-circle list-inside ml-6 mt-1">
+                        <li>Tus datos ya están organizados en columnas de una matriz que quieres graficar contra un eje X común (o contra otra matriz).</li>
+                        <li>Buscas una forma más concisa de graficar múltiples series similares.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>
+                Ambos métodos producen resultados visualmente similares y comparten muchos parámetros gráficos (<code>xlab</code>, <code>ylab</code>, <code>main</code>, <code>xlim</code>, <code>ylim</code>, etc.). La principal diferencia radica en cómo se proporcionan los datos y cómo se especifican los atributos (color, tipo de línea) para cada serie.
+            </p>
+        </section>
+
+    </div>
+
+</body>
+</html>
