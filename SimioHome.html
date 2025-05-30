@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Evento Discreto con SIMIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .section-title {
+            @apply text-3xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-500;
+        }
+        .card {
+            @apply bg-white shadow-lg rounded-lg p-6 transition-transform transform hover:scale-105;
+        }
+        .nav-link {
+            @apply px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-blue-500 hover:text-white transition-colors;
+        }
+        .nav-link-active {
+            @apply bg-blue-600 text-white;
+        }
+        .btn {
+            @apply px-6 py-3 rounded-lg font-semibold text-white shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-50;
+        }
+        .btn-primary {
+            @apply bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
+        }
+        .btn-secondary {
+            @apply bg-gray-600 hover:bg-gray-700 focus:ring-gray-500;
+        }
+        .btn-ai {
+            @apply bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 focus:ring-pink-500;
+        }
+        /* Estilo para el contenedor de resultados de la IA */
+        #aiProjectHelperOutput pre {
+            white-space: pre-wrap; /* Permite que el texto se ajuste */
+            word-wrap: break-word; /* Rompe palabras largas si es necesario */
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid #e5e7eb; /* border border-gray-200 */
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+         /* Estilo para el mensaje de carga */
+        .loading-message {
+            @apply text-center text-gray-600 py-4;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex flex-wrap items-center justify-between">
+            <div class="flex items-center">
+                <h1 class="text-xl md:text-2xl font-bold text-blue-700">Simulación de Evento Discreto con SIMIO</h1>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            <nav id="main-nav" class="w-full md:w-auto hidden md:flex flex-col md:flex-row md:items-center mt-4 md:mt-0 space-y-2 md:space-y-0 md:space-x-1">
+                <a href="#inicio" class="nav-link nav-link-active">Inicio</a>
+                <a href="#anuncios" class="nav-link">Anuncios</a>
+                <a href="#temas" class="nav-link">Temas</a>
+                <a href="#recursos" class="nav-link">Recursos</a>
+                <a href="#ai-project-helper" class="nav-link">✨ Asistente IA</a>
+                <a href="#calendario" class="nav-link">Calendario</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </nav>
+        </div>
+        <div class="bg-blue-600 text-white px-6 py-2 text-sm">
+            Prof. Dr. Victor Cruz 
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8">
+
+        <section id="inicio" class="mb-16">
+            <div class="bg-white shadow-xl rounded-lg p-8 md:p-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-blue-700 mb-6">¡Bienvenido al Curso de Simulacion!</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    Esta página es tu centro de recursos para el curso de Simulación de Evento Discreto utilizando 
+                    el software SIMIO.<br>
+                    Aquí encontrarás anuncios, materiales de clase, enlaces útiles y mucho más.
+                     ¡Explora las secciones y aprovecha al máximo los recursos disponibles!
+                </p>
+                <img src="https://i.ibb.co/jPHM0BvP/000358.png" alt="Imagen destacada del curso de simulación"
+                 class="w-full h-auto rounded-lg shadow-md mb-8" onerror="this.src='https://i.ibb.co/jPHM0BvP/000358.png'; this.alt='Error al cargar imagen'">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold text-blue-600 mb-3">Anuncios Importantes</h3>
+                        <div id="home-anuncios" class="space-y-3">
+                            <div class="border-l-4 border-blue-500 pl-4">
+                                <p class="font-medium"><strong>3 de Junio, 2025:</strong> Clase en Linea</p>
+                                <p class="text-sm text-gray-600">No olviden subir sus archivos a la plataforma antes de la medianoche.</p>
+                            </div>
+                            <div class="border-l-4 border-yellow-500 pl-4">
+                                <p class="font-medium"><strong>9 de Junio, 2025:</strong> Clase Presencial</p>
+                                <p class="text-sm text-gray-600">Se retoman las clases normales en los 
+                                    horarios asignados de Verano.</p>
+                            </div>
+                        </div>
+                        <a href="#anuncios" class="inline-block mt-4 text-blue-600 hover:text-blue-800 font-medium">Ver todos los anuncios →</a>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-lg shadow">
+                        <h3 class="text-xl font-semibold text-green-600 mb-3">Acceso Rápido</h3>
+                        <div class="space-y-3">
+                            <a href="#tema-2" class="block btn btn-primary w-full text-center">Última Unidad Vista: Modelado Básico</a>
+                            <a href="#recursos-software" class="block btn btn-secondary w-full text-center">Descargar SIMIO (Trial)</a>
+                            <a href="#calendario" class="block btn btn-secondary w-full text-center">Próximo Examen: 10 de Junio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>  
+
+        <section id="anuncios" class="mb-16 scroll-mt-20">
+            <h2 class="section-title">Anuncios y Novedades</h2>
+            <div class="space-y-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Entrega Práctica 3: Modelos Avanzados <span class="text-sm text-gray-500 float-right">05 de Junio, 2025</span></h3>
+                    <p class="text-gray-700 mb-3">La tercera práctica sobre modelado avanzado con SIMIO ya está disponible. La fecha límite de entrega es el 15 de Junio. Consulten las especificaciones en la sección de Temas.</p>
+                    <a href="#" class="text-blue-600 hover:underline">Leer más...</a>
+                    </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Recordatorio: Examen Parcial 2 <span class="text-sm text-gray-500 float-right">01 de Junio, 2025</span></h3>
+                    <p class="text-gray-700">No olviden que el segundo examen parcial será el próximo 10 de Junio. Cubrirá las unidades 3 y 4. Habrá una sesión de dudas el día anterior.</p>
+                </div>
+                 <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Actualización Software SIMIO <span class="text-sm text-gray-500 float-right">20 de Mayo, 2025</span></h3>
+                    <p class="text-gray-700 mb-3">Se ha liberado una nueva versión de SIMIO. Aunque no es obligatorio actualizar para el curso, pueden explorar las nuevas funcionalidades. Enlace en la sección de Recursos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="temas" class="mb-16 scroll-mt-20">
+            <h2 class="section-title"><strong>Temas del Curso</strong></h2>
+            <p> </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Unidad 1: Introducción a la Simulación</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Conceptos básicos, tipos de simulación, ventajas y desventajas. Introducción al software SIMIO.</p>
+                    <a href="#unidad-1-detalle" class="btn btn-primary w-full text-center text-sm">Ver Contenido</a>
+                </div>
+                <div class="card" id="tema-2">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Unidad 2: Modelado Básico en SIMIO</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Creación de modelos simples, objetos estándar, flujo de entidades, recolección de estadísticas básicas.</p>
+                    <a href="#unidad-2-detalle" class="btn btn-primary w-full text-center text-sm">Ver Contenido</a>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Unidad 3: Modelado Intermedio</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Uso de tablas de datos, procesos, decisiones lógicas, recursos móviles y fijos.</p>
+                    <a href="#unidad-3-detalle" class="btn btn-primary w-full text-center text-sm">Ver Contenido</a>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Unidad 4: Análisis de Resultados</h3>
+                    <p class="text-gray-600 mb-4 text-sm">Interpretación de reportes de SIMIO, experimentos, optimización básica (OptQuest).</p>
+                    <a href="#unidad-4-detalle" class="btn btn-primary w-full text-center text-sm">Ver Contenido</a>
+                </div>
+            </div>
+
+            <div id="unidad-1-detalle" class="mt-10 p-6 bg-white rounded-lg shadow-lg scroll-mt-24">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Detalle: Unidad 1 - Introducción a la Simulación</h3>
+                <p class="mb-2"><strong>Objetivos:</strong> Comprender los fundamentos de la simulación de eventos discretos
+                     y familiarizarse con la interfaz de SIMIO.</p>
+                <ul class="list-disc list-inside space-y-2 mb-4">
+                    <li><strong>Apuntes de Clase:</strong> <a href="#" class="text-blue-600 hover:underline">Introduccion_Simulacion</a></li>
+                    <li><strong>Presentación:</strong> <a href="#" class="text-blue-600 hover:underline">Slides_Unidad1</a></li>
+                    <li><strong>Video Tutorial Clase en Linea :</strong> <a href="https://www.youtube.com/watch?v=VIDEO_ID_SIMIO_INTRO" target="_blank" class="text-blue-600 hover:underline">Primeros Pasos en SIMIO (YouTube)</a></li>
+                    <li><strong>Lectura Complementaria:</strong> <a href="#" class="text-blue-600 hover:underline">Artículo sobre Aplicaciones de Simulación</a></li>
+                    <li><strong>Actividad:</strong> Quiz inicial sobre modelado básico (enlace en BrightSpace).</li>
+                </ul>
+            </div>
+             <div id="unidad-2-detalle" class="mt-10 p-6 bg-white rounded-lg shadow-lg scroll-mt-24">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Detalle: Unidad 2 - Modelado Básico en SIMIO</h3>
+                <p class="mb-2"><strong>Objetivos:</strong> Aprender a construir modelos simples, configurar objetos estándar y analizar resultados preliminares.</p>
+                <ul class="list-disc list-inside space-y-2 mb-4">
+                    <li><strong>Apuntes de Clase:</strong> <a href="#" class="text-blue-600 hover:underline">Modelado_Basico_SIMIO.pdf</a></li>
+                    <li><strong>Presentación:</strong> <a href="#" class="text-blue-600 hover:underline">Slides_Unidad2.pptx</a></li>
+                    <li><strong>Ejemplos SIMIO:</strong> <a href="#" class="text-blue-600 hover:underline">Modelos_Ejemplo_U2.zip</a></li>
+                    <li><strong>Ejercicio Práctico:</strong> <a href="#" class="text-blue-600 hover:underline">Practica_Modelado_Basico.pdf</a></li>
+                </ul>
+            </div>
+            </section>
+
+        <section id="recursos" class="mb-16 scroll-mt-20">
+            <h2 class="section-title">Recursos Generales</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Guías y Manuales</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><a href="#" class="text-blue-600 hover:underline">Manual de Usuario SIMIO (PDF Oficial)</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Guía Rápida de Objetos Comunes en SIMIO</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Reglamento del Curso</a></li>
+                    </ul>
+                </div>
+                <div class="card" id="recursos-software">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Software y Herramientas</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><a href="https://www.simio.com/academics/simio-academic-software.php" target="_blank" class="text-blue-600 hover:underline">Descargar SIMIO Academic Version / Trial</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Tutorial: Instalación de SIMIO</a></li>
+                        <li><a href="https://www.draw.io" target="_blank" class="text-blue-600 hover:underline">draw.io (para diagramas de flujo)</a></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-2">Enlaces Útiles</h3>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><a href="https://www.simio.com/forums/" target="_blank" class="text-blue-600 hover:underline">Foros Oficiales de SIMIO</a></li>
+                        <li><a href="https://www.informs.org/" target="_blank" class="text-blue-600 hover:underline">INFORMS (Institute for Operations Research and the Management Sciences)</a></li>
+                        <li><a href="#" class="text-blue-600 hover:underline">Canal de YouTube con Tutoriales de Simulación</a></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai-project-helper" class="mb-16 scroll-mt-20">
+            <h2 class="section-title">✨ Asistente IA para Proyectos de Simulación</h2>
+            <div class="card">
+                <p class="text-gray-700 mb-4">
+                    ¿Tienes una idea para un proyecto de simulación pero no sabes por dónde empezar?
+                    Describe tu problema o el sistema del mundo real que te gustaría modelar en SIMIO.
+                    Nuestra IA te ayudará a identificar elementos clave para estructurar tu proyecto.
+                </p>
+                <div class="mb-4">
+                    <label for="problemDescription" class="block text-sm font-medium text-gray-700 mb-1">Describe tu problema o sistema:</label>
+                    <textarea id="problemDescription" name="problemDescription" rows="6" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Ej: Quiero simular la atención de pacientes en la sala de emergencias de un hospital para reducir tiempos de espera. Hay doctores, enfermeras, salas de examen, y pacientes con diferentes niveles de urgencia..."></textarea>
+                </div>
+                <button id="getAiHelpButton" class="btn btn-ai w-full md:w-auto">✨ Obtener Ayuda de la IA</button>
+                
+                <div id="aiProjectHelperOutputContainer" class="mt-6">
+                    <div id="aiLoadingMessage" class="loading-message hidden">
+                        <p>Analizando tu problema y generando sugerencias... 🧠</p>
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mt-2"></div>
+                    </div>
+                    <div id="aiProjectHelperOutput" class="text-gray-700">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="calendario" class="mb-16 scroll-mt-20">
+            <h2 class="section-title">Calendario y Fechas Importantes</h2>
+            <div class="card">
+                <h3 class="text-xl font-semibold text-blue-700 mb-3">Fechas Clave del Semestre:</h3>
+                <ul class="space-y-3">
+                    <li class="flex items-center">
+                        <span class="bg-red-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">Parcial 1</span>
+                        <span><strong>10 de Junio, 2025:</strong> Primer Examen Parcial (Unidades 1 y 2)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="bg-red-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">Parcial 2</span>
+                        <span><strong>10 de Junio, 2025:</strong> Segundo Examen Parcial (Unidades 2 y 3)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="bg-yellow-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">ORDINARIO</span>
+                        <span><strong>10 de Junio, 2025:</strong> Ordinario (Unidades 3 y 4)</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="bg-green-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">ENTREGA</span>
+                        <span><strong>15 de Junio, 2025:</strong> Entrega Práctica 3</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="bg-green-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">PROYECTO</span>
+                        <span><strong>30 de Junio, 2025:</strong> Presentación Proyecto Final</span>
+                    </li>
+                     <li class="flex items-center">
+                        <span class="bg-blue-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">CLASES</span>
+                        <span><strong>6 veces por semana:</strong> Clase Regular 10:00 AM - 12:00 PM</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="bg-gray-500 text-white text-xs font-semibold mr-3 px-2.5 py-0.5 rounded-full">FERIADO</span>
+                        <span><strong>16 de Septiembre, 2025:</strong> Día de la Independencia (No hay clases)</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="contacto" class="mb-16 scroll-mt-20">
+            <h2 class="section-title">Contacto y Dudas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-3">Información de Contacto</h3>
+                    <p class="mb-2"><strong>Profesor/a:</strong> Dr. Victor Cruz</p>
+                    <p class="mb-2"><strong>Google Chat:</strong> <a href="mailto:tuemail@example.com" class="text-blue-600 hover:underline">tuemail@example.com</a></p>
+                    <p class="mb-2"><strong>Horas de Oficina/Consulta:</strong> Lunes y Jueves, 11:00 AM - 12:00 PM (Previa cita por email)</p>
+                    <h4 class="font-semibold mt-4 mb-2">Normas de Comunicación:</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+                        <li>Para dudas urgentes, enviar email con el asunto "DUDA URGENTE - SIMIO - [Tu Nombre]".</li>
+                        <li>Las consultas generales se atenderán preferentemente durante las horas de oficina.</li>
+                        <li>Se espera un tiempo de respuesta de 24-48 horas hábiles para correos.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-3">Preguntas Frecuentes (FAQ)</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <h4 class="font-medium text-gray-700">¿Qué versión de SIMIO necesitamos?</h4>
+                            <p class="text-sm text-gray-600">La versión Académica Gratuita o la versión de prueba (Trial) son suficientes para el curso. Los enlaces están en Recursos.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-700">¿Las prácticas son individuales o en equipo?</h4>
+                            <p class="text-sm text-gray-600">Las primeras dos prácticas son individuales. La práctica 3 y el proyecto final pueden ser en equipos de hasta 3 personas.</p>
+                        </div>
+                         <div>
+                            <h4 class="font-medium text-gray-700">¿Dónde subo mis tareas?</h4>
+                            <p class="text-sm text-gray-600">Todas las entregas se realizarán a través de la plataforma Moodle/Canvas del curso (enlace se proporcionará).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-8 text-center">
+        <div class="container mx-auto px-6">
+            <p>© <span id="currentYear"></span> - Curso de Simulación de Evento Discreto con SIMIO - Prof. Dr. Victor Cruz</p>
+            <p class="text-sm mt-1">Última Actualización: <span id="lastUpdated"></span></p>
+            </div>
+    </footer>
+
+    <script>
+        // Script para el menú hamburguesa en móviles
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('hidden');
+            });
+        }
+
+        // Script para actualizar el año y fecha de última actualización
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        document.getElementById('lastUpdated').textContent = '30 de Mayo, 2025'; 
+
+        // Script para resaltar el enlace de navegación activo según la sección visible
+        const navLinks = mainNav.querySelectorAll('a');
+        const sections = document.querySelectorAll('main section');
+
+        function changeNav() {
+            let index = sections.length;
+            while(--index && window.scrollY + 100 < sections[index].offsetTop) {} 
+            
+            navLinks.forEach((link) => link.classList.remove('nav-link-active'));
+            const activeLink = mainNav.querySelector(`a[href="#${sections[index].id}"]`);
+            if (activeLink) {
+                activeLink.classList.add('nav-link-active');
+            } else if (navLinks.length > 0) {
+                 navLinks[0].classList.add('nav-link-active');
+            }
+        }
+        window.addEventListener('scroll', changeNav);
+        window.addEventListener('load', changeNav); 
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) { 
+                    mainNav.classList.add('hidden');
+                }
+            });
+        });
+
+        // --- Funcionalidad del Asistente IA para Proyectos de Simulación ---
+        const getAiHelpButton = document.getElementById('getAiHelpButton');
+        const problemDescriptionTextarea = document.getElementById('problemDescription');
+        const aiProjectHelperOutputDiv = document.getElementById('aiProjectHelperOutput');
+        const aiLoadingMessageDiv = document.getElementById('aiLoadingMessage');
+
+        if (getAiHelpButton && problemDescriptionTextarea && aiProjectHelperOutputDiv && aiLoadingMessageDiv) {
+            getAiHelpButton.addEventListener('click', async () => {
+                const problemDescription = problemDescriptionTextarea.value.trim();
+                if (!problemDescription) {
+                    aiProjectHelperOutputDiv.innerHTML = "<p class='text-red-500'>Por favor, describe tu problema o sistema primero.</p>";
+                    return;
+                }
+
+                aiProjectHelperOutputDiv.innerHTML = ""; // Limpiar salida anterior
+                aiLoadingMessageDiv.classList.remove('hidden'); // Mostrar mensaje de carga
+                getAiHelpButton.disabled = true; // Deshabilitar botón durante la carga
+
+                const prompt = `Eres un experto en simulación de eventos discretos con SIMIO. Un estudiante ha descrito el siguiente problema del mundo real que quiere modelar: "${problemDescription}". Ayúdalo a definir los siguientes elementos clave para su proyecto de simulación:
+1.  **Entidades Principales:** (Objetos que fluyen a través del sistema, ej: pacientes, productos, llamadas)
+2.  **Recursos Clave:** (Objetos que son utilizados por las entidades y tienen capacidad limitada, ej: doctores, máquinas, operadores, camas)
+3.  **Variables de Estado Importantes:** (Valores que cambian y describen el estado del sistema, ej: número de personas en cola, estado de una máquina)
+4.  **Posibles Objetivos del Estudio de Simulación:** (Qué se busca mejorar o entender con el modelo, ej: reducir tiempo de espera, aumentar producción, optimizar uso de recursos)
+5.  **Métricas de Desempeño Clave:** (Indicadores para medir los objetivos, ej: tiempo promedio en sistema, utilización de recursos, tasa de producción)
+
+Proporciona la respuesta de forma clara, concisa y bien estructurada, usando Markdown para el formato (negritas, listas).`;
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // Se deja vacío, Canvas lo gestionará
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        console.error("Error response body:", errorBody);
+                        throw new Error(`Error de la API: ${response.status} ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        let generatedText = result.candidates[0].content.parts[0].text;
+                        
+                        // Reemplazar Markdown simple con HTML para mejor visualización
+                        generatedText = generatedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrita
+                        generatedText = generatedText.replace(/\n/g, '<br>'); // Saltos de línea
+                        // Para listas (simplificado, podría mejorarse con expresiones regulares más complejas)
+                        generatedText = generatedText.replace(/(\d+\.\s)/g, '<br><strong>$1</strong>'); 
+                        generatedText = generatedText.replace(/-\s/g, '<br>&nbsp;&nbsp;-&nbsp;'); 
+                        
+                        aiProjectHelperOutputDiv.innerHTML = `<pre class="whitespace-pre-wrap">${generatedText}</pre>`;
+                    } else {
+                        console.error("Respuesta inesperada de la API:", result);
+                        aiProjectHelperOutputDiv.innerHTML = "<p class='text-red-500'>No se pudo obtener una respuesta de la IA. Revisa la consola para más detalles.</p>";
+                    }
+
+                } catch (error) {
+                    console.error('Error al llamar a la API de Gemini:', error);
+                    aiProjectHelperOutputDiv.innerHTML = `<p class='text-red-500'>Ocurrió un error al contactar al asistente de IA. Por favor, inténtalo de nuevo más tarde. Detalles: ${error.message}</p>`;
+                } finally {
+                    aiLoadingMessageDiv.classList.add('hidden'); // Ocultar mensaje de carga
+                    getAiHelpButton.disabled = false; // Habilitar botón
+                }
+            });
+        }
+        
+    </script>
+
+</body>
+</html>
