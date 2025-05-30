@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R: Tu Mejor Aliado para Dominar los Métodos Numéricos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255,255,255,0.1) 0px,
+                rgba(255,255,255,0.1) 2px,
+                transparent 2px,
+                transparent 20px
+            );
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section .subtitle {
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 2;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-stat {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-stat .number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .hero-stat .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 3rem 2rem;
+        }
+
+        .intro-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            border-left: 8px solid #2a5298;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .intro-section::after {
+            content: '📊';
+            position: absolute;
+            right: 2rem;
+            top: 2rem;
+            font-size: 4rem;
+            opacity: 0.3;
+        }
+
+        .intro-section h2 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .intro-section p {
+            font-size: 1.2rem;
+            color: #444;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 4rem 0 3rem 0;
+            font-size: 2.5rem;
+            color: #1e3c72;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .advantage-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid #e0e6ed;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advantage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+        }
+
+        .advantage-card h3 {
+            color: #2a5298;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .advantage-card p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .comparison-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 4rem 2rem;
+            border-radius: 25px;
+            margin: 4rem 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .comparison-table th {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .comparison-table td {
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1rem;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .rating {
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            color: white;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .excellent { background: #28a745; }
+        .good { background: #ffc107; color: #333; }
+        .fair { background: #fd7e14; }
+        .poor { background: #dc3545; }
+
+        .why-r-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+        }
+
+        .why-r-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .why-r-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 6px solid #1565c0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .why-r-item h4 {
+            color: #1565c0;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .testimonials-section {
+            background: #f8f9fa;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 4rem 0;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border-left: 6px solid #2a5298;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+            font-size: 4rem;
+            color: #2a5298;
+            opacity: 0.3;
+        }
+
+        .testimonial p {
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding-left: 3rem;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #2a5298;
+            font-size: 1rem;
+            padding-left: 3rem;
+        }
+
+        .cta-section {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin: 4rem 0;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #2a5298;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .references-section {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 15px;
+            margin: 3rem 0;
+        }
+
+        .references-section h3 {
+            margin-bottom: 2rem;
+            color: #3498db;
+        }
+
+        .references-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1rem;
+        }
+
+        .reference-item {
+            padding: 0.5rem 0;
+        }
+
+        .reference-item a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .advantages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-table {
+                font-size: 0.8rem;
+            }
+            
+            .content {
+                padding: 2rem 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 2rem auto;
+    padding-bottom: 56.25%;
+    height: 0;
+    display: flex;
+    justify-content: center;
+}
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="hero-section">
+            <h1>R: Tu Mejor Aliado para Dominar los Métodos Numéricos</h1>
+            <h2>Dr. Victor Cruz</h2>
+            <p class="subtitle">Descubre por qué R supera a Python, MATLAB y otros lenguajes en el ámbito educativo y profesional</p>
+            
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="number">2M+</span>
+                    <span class="label">Usuarios activos</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">25+</span>
+                    <span class="label">Años de desarrollo</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">18K+</span>
+                    <span class="label">Paquetes disponibles</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="number">100%</span>
+                    <span class="label">Gratuito y open source</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="content">
+            <section class="intro-section">
+                <h2>¿Por qué elegir R para aprender métodos numéricos?</h2>
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/9kYUGMg_14s?si=yf2tMUDxWtBAAwbA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+                <p>Al elegir un lenguaje de programación para la enseñanza de métodos numéricos, es crucial considerar herramientas que no solo sean potentes, sino también accesibles y relevantes para las aplicaciones del mundo real. <span class="highlight">R se ha establecido como el lenguaje líder en análisis estadístico y métodos numéricos</span> en el ámbito educativo. Diseñado originalmente por estadísticos para estadísticos en la Universidad de Auckland, R ofrece una combinación única de potencia, accesibilidad y recursos pedagógicos que lo hacen superior a otras alternativas como Python, MATLAB, SAS o SPSS.</p>
+            </section>
+
+            <h2 class="section-title">Las Ventajas Clave de R</h2>
+
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <h3><span class="icon">💰</span>Completamente Gratuito y Accesible</h3>
+                    <p>A diferencia de MATLAB que requiere licencias costosas (que pueden superar los $2,000 anuales), <strong>R es completamente gratuito y de código abierto</strong>. Esta accesibilidad elimina barreras económicas y permite que estudiantes e instituciones educativas accedan a herramientas de análisis de clase mundial sin costo alguno, democratizando el aprendizaje de métodos numéricos.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">📊</span>Diseñado Específicamente para Estadística</h3>
+                    <p>R fue <strong>creado específicamente por estadísticos para análisis estadístico y métodos numéricos</strong>. Su estructura y funciones están optimizadas para la manipulación y análisis de conjuntos de datos, facilitando la comprensión de conceptos como regresión, optimización y simulación. Esta especialización se traduce en una sintaxis más intuitiva para operaciones estadísticas.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">📈</span>Capacidades de Visualización Superiores</h3>
+                    <p>Una de las mayores fortalezas de R es su robusto sistema de gráficos, especialmente con paquetes como <code>ggplot2</code>. Esto permite crear visualizaciones de alta calidad y listas para publicación con facilidad. <strong>La visualización es clave para comprender el comportamiento de algoritmos numéricos</strong>, la convergencia y los resultados de las simulaciones.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">📚</span>Más de 1,000 Funciones Estadísticas Integradas</h3>
+                    <p>R incluye una vasta colección de funciones estadísticas incorporadas, desde pruebas básicas hasta análisis avanzados. <strong>Esto significa que los estudiantes pueden realizar análisis complejos con comandos simples</strong>, facilitando el aprendizaje de conceptos sin perderse en detalles de implementación que otros lenguajes requieren programar desde cero.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">🔬</span>Investigación Reproducible y Transparente</h3>
+                    <p>R promueve las mejores prácticas de investigación reproducible. <strong>Todos los comandos se escriben en scripts</strong>, creando un registro auditable del análisis. En la enseñanza de métodos numéricos, esto significa que los estudiantes pueden documentar sus pasos de manera clara, facilitando la depuración, el intercambio de código y la comprensión de cómo se obtienen los resultados.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">🌐</span>Comunidad Académica Activa</h3>
+                    <p>La comunidad de R está <strong>profundamente arraigada en el mundo académico</strong>, con investigadores contribuyendo constantemente nuevos paquetes y métodos. Muchas universidades prestigiosas como Cornell, UC Berkeley y Universidad de Adelaide han adoptado R como herramienta principal de enseñanza. Los últimos avances en estadística y métodos numéricos están disponibles en R antes que en cualquier otro software.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">🎓</span>Recursos Educativos Excepcionales</h3>
+                    <p>La comunidad académica de R ha desarrollado <strong>recursos educativos abundantes</strong>, incluyendo libros como "Learning Statistics with R", cursos interactivos como Swirl, y numerosos tutoriales especializados. Existen libros, cursos y foros centrados específicamente en el uso de R para el análisis numérico y científico.</p>
+                </div>
+
+                <div class="advantage-card">
+                    <h3><span class="icon">💻</span>Entorno de Desarrollo Integrado (RStudio)</h3>
+                    <p>RStudio proporciona un entorno de desarrollo integrado (IDE) que simplifica enormemente la codificación en R. <strong>Su interfaz intuitiva facilita la manipulación de datos, la ejecución de código y la visualización de resultados</strong>, ayudando a los estudiantes a concentrarse en los conceptos numéricos en lugar de en la complejidad del entorno.</p>
+                </div>
+            </div>
+
+            <section class="why-r-section">
+                <h2 class="section-title" style="margin-top: 0;">¿Por qué R se destaca específicamente para Métodos Numéricos?</h2>
+                
+                <div class="why-r-grid">
+                    <div class="why-r-item">
+                        <h4>📐 Álgebra Lineal Integrada</h4>
+                        <p>R cuenta con operaciones matriciales nativas y optimizadas, fundamentales para muchos métodos numéricos como sistemas de ecuaciones lineales, eigenvalores y eigenvectores.</p>
+                    </div>
+
+                    <div class="why-r-item">
+                        <h4>🔢 Precisión Numérica Avanzada</h4>
+                        <p>Manejo sofisticado de tipos de datos numéricos y control de precisión, crucial para algoritmos que requieren estabilidad numérica.</p>
+                    </div>
+
+                    <div class="why-r-item">
+                        <h4>📊 Análisis Exploratorio Superior</h4>
+                        <p>Herramientas excepcionales para explorar datos y resultados, permitiendo una comprensión profunda del comportamiento de los algoritmos.</p>
+                    </div>
+
+                    <div class="why-r-item">
+                        <h4>🔬 Validación de Métodos Facilitada</h4>
+                        <p>Facilidad para implementar y comparar diferentes algoritmos numéricos, esencial para entender las ventajas y limitaciones de cada método.</p>
+                    </div>
+
+                    <div class="why-r-item">
+                        <h4>📈 Simulación Monte Carlo Avanzada</h4>
+                        <p>Capacidades superiores para simulaciones Monte Carlo y bootstrap, técnicas fundamentales en métodos numéricos modernos.</p>
+                    </div>
+
+                    <div class="why-r-item">
+                        <h4>📦 Ecosistema Rico en Paquetes</h4>
+                        <p>Miles de paquetes especializados en métodos numéricos, optimización, ecuaciones diferenciales y técnicas estadísticas avanzadas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="comparison-section">
+                <h2 style="text-align: center; margin-bottom: 2rem; color: #333;">Comparación Detallada con Otros Lenguajes</h2>
+                <p style="text-align: center; font-size: 1.1rem; color: #666; margin-bottom: 1rem;">
+                    Mientras que Python es más "universal" y MATLAB puede tener ventajas en áreas específicas como procesamiento de señales, la especialización de R en estadística y su naturaleza de código abierto lo hacen particularmente atractivo para la enseñanza de métodos numéricos.
+                </p>
+                
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Característica</th>
+                            <th>R</th>
+                            <th>Python</th>
+                            <th>MATLAB</th>
+                            <th>SAS/SPSS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Costo de Licencia</strong></td>
+                            <td><span class="rating excellent">Gratuito</span></td>
+                            <td><span class="rating excellent">Gratuito</span></td>
+                            <td><span class="rating poor">$2,000+ anual</span></td>
+                            <td><span class="rating poor">$5,000+ anual</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Facilidad para Estadística</strong></td>
+                            <td><span class="rating excellent">Excelente</span></td>
+                            <td><span class="rating good">Bueno</span></td>
+                            <td><span class="rating fair">Regular</span></td>
+                            <td><span class="rating good">Bueno</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recursos Educativos</strong></td>
+                            <td><span class="rating excellent">Abundantes</span></td>
+                            <td><span class="rating good">Buenos</span></td>
+                            <td><span class="rating fair">Limitados</span></td>
+                            <td><span class="rating fair">Limitados</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reproducibilidad</strong></td>
+                            <td><span class="rating excellent">Excelente</span></td>
+                            <td><span class="rating excellent">Excelente</span></td>
+                            <td><span class="rating good">Bueno</span></td>
+                            <td><span class="rating poor">Pobre</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Visualización</strong></td>
+                            <td><span class="rating excellent">Superior</span></td>
+                            <td><span class="rating good">Bueno</span></td>
+                            <td><span class="rating fair">Básico</span></td>
+                            <td><span class="rating fair">Básico</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Comunidad Académica</strong></td>
+                            <td><span class="rating excellent">Muy Activa</span></td>
+                            <td><span class="rating good">Activa</span></td>
+                            <td><span class="rating fair">Moderada</span></td>
+                            <td><span class="rating fair">Limitada</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Curva de Aprendizaje</strong></td>
+                            <td><span class="rating good">Moderada</span></td>
+                            <td><span class="rating fair">Pronunciada</span></td>
+                            <td><span class="rating good">Moderada</span></td>
+                            <td><span class="rating excellent">Fácil</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="testimonials-section">
+                <h2 class="section-title" style="margin-top: 0;">Lo que dicen los Expertos y Educadores</h2>
+                
+                <div class="testimonial">
+                    <p>R, en comparación con otros lenguajes que he encontrado, es accesible, legible y versátil. Es especialmente valioso para el análisis estadístico donde R supera a Python y MATLAB.</p>
+                    <p class="testimonial-author">- Jamie Hall, Consultor en Synapse Energy Economics</p>
+                </div>
+
+                <div class="testimonial">
+                    <p>R ofrece varias ventajas significativas. Primero, es open-source y gratuito, lo que reduce las barreras de acceso. Segundo, es flexible y poderoso; puede usarse tanto para simulación como para análisis de datos.</p>
+                    <p class="testimonial-author">- Estudio "Teaching Statistics and Data Analysis with R"</p>
+                </div>
+
+                <div class="testimonial">
+                    <p>Los estudiantes expresaron actitudes negativas hacia R al principio del curso, pero la mayoría desarrolló actitudes más positivas después de usar nuestro material interactivo, independientemente de las características demográficas o experiencia previa en programación.</p>
+                    <p class="testimonial-author">- Investigación Universidad de Estados Unidos sobre Enseñanza con R</p>
+                </div>
+
+                <div class="testimonial">
+                    <p>R es un entorno poderoso para enseñar muchos aspectos de la biología computacional, incluyendo genómica funcional, neurociencia computacional, sistemas dinámicos, genética estadística y biología de redes.</p>
+                    <p class="testimonial-author">- PMC: A Quick Guide to Teaching R Programming</p>
+                </div>
+            </section>
+
+            <section class="cta-section">
+                <h2 style="margin-bottom: 1rem;">¡Únete a la Revolución Educativa con R!</h2>
+                <p style="font-size: 1.3rem; margin-bottom: 2rem;">Miles de universidades y millones de estudiantes ya han descubierto las ventajas de R. No te quedes atrás en la enseñanza de métodos numéricos del siglo XXI.</p>
+                
+                <div class="cta-buttons">
+                    <a href="https://www.r-project.org/" class="cta-button" target="_blank">Comenzar con R</a>
+                    <a href="https://cran.r-project.org/doc/manuals/r-release/R-intro.html" class="cta-button" target="_blank">Guía para Principiantes</a>
+                    <a href="https://rstudio.com/products/rstudio/download/" class="cta-button" target="_blank">Descargar RStudio</a>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.2); border-radius: 15px; backdrop-filter: blur(10px);">
+                    <p style="font-size: 1rem; margin: 0;"><strong>Nota importante:</strong> Aunque R puede tener una curva de aprendizaje inicial para algunos debido a su sintaxis orientada a la estadística, sus beneficios a largo plazo en términos de reproducibilidad, visualización y el vasto ecosistema de paquetes lo convierten en una herramienta invaluable para educadores y estudiantes en el campo de los métodos numéricos.</p>
+                </div>
+            </section>
+
+            <section class="references-section">
+                <h3>Referencias y Fuentes Académicas</h3>
+                <div class="references-grid">
+                    <div class="reference-item">
+                        <a href="https://www.reddit.com/r/GradSchool/comments/sr1iu0/python_vs_matlab_vs_r/" target="_blank">Python vs Matlab vs R - Reddit Graduate School Discussion</a>
+                    </div>
+                    <div class="reference-item">
+                        <a href="https://
