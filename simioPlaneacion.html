@@ -34,12 +34,7 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8" x-data="{ openSection: 'info' }">
 
         <!-- Encabezado -->
-        <header class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <div class="flex flex-col sm:flex-row justify-between items-center">
-                <img src="https://placehold.co/300x115/ffffff/FF5900?text=Planeaci%C3%B3n+Did%C3%A1ctica" alt="Logo Planeación Didáctica" class="h-20 sm:h-24 mb-4 sm:mb-0" onerror="this.onerror=null; this.src='https://placehold.co/300x115';">
-                <img src="https://placehold.co/150x150/ffffff/000000?text=An%C3%A1huac+Mayab" alt="Logo Anáhuac Mayab" class="h-20 sm:h-24" onerror="this.onerror=null; this.src='https://placehold.co/150x150';">
-            </div>
-        </header>
+        
 
         <main>
             <!-- Sección de Información General -->
@@ -124,9 +119,14 @@
                             <!-- Contenido de las pestañas -->
                             <div x-show="subTab === 'parcial1'" class="space-y-4">
                                 <div class="bg-gray-50 rounded-lg p-4">
-                                    <h4 class="font-bold text-lg">Actividad de Biblioteca y Resumen</h4>
-                                    <p><span class="font-semibold">Descripción:</span> Resumir en una presentación el tema 1.5 del Libro "Simulación de evento discreto".</p>
-                                    <p><span class="font-semibold">Porcentaje:</span> Parte del 60% de parciales.</p>
+                                    <h4 class="font-bold text-lg text-orange-600">1er Parcial</h4>
+                                    <p><span class="font-semibold">Descripción:</span> Modelado de sistemas lineales 1 sola entidad.</p>
+                                    <p><span class="font-semibold">Porcentaje:</span> 30% del Total.</p>
+                                    <p>  </p>
+                                    <h4 class="font-bold text-lg">Actividad de Biblioteca</h4>
+                                    <p><span class="font-semibold">Descripción:</span> Resumir en una presentación el tema 1.5 del
+                                         Libro "Simulación de evento discreto".</p>
+                                    <p><span class="font-semibold">Porcentaje:</span> Parte del 15% de Tareas.</p>
                                 </div>
                             </div>
                              <div x-show="subTab === 'parcial2'" class="space-y-4">
@@ -223,7 +223,7 @@
         
         <!-- Pie de Página -->
         <footer class="text-center mt-12 py-6 border-t">
-            <p class="text-gray-500">&copy; 2024-2025 Universidad Anáhuac Mayab. Todos los derechos reservados.</p>
+            <p class="text-gray-500">&copy; 2025 Dr. Victor Cruz Morales. Todos los derechos reservados.</p>
         </footer>
 
     </div>
