@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planeación - Simulación</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Alpine.js for interactivity -->
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para una transición suave en los acordeones */
+        [x-cloak] { display: none !important; }
+        .accordion-content {
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8" x-data="{ openSection: 'info' }">
+
+        <!-- Encabezado -->
+        <header class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center">
+                <img src="https://placehold.co/300x115/ffffff/FF5900?text=Planeaci%C3%B3n+Did%C3%A1ctica" alt="Logo Planeación Didáctica" class="h-20 sm:h-24 mb-4 sm:mb-0" onerror="this.onerror=null; this.src='https://placehold.co/300x115';">
+                <img src="https://placehold.co/150x150/ffffff/000000?text=An%C3%A1huac+Mayab" alt="Logo Anáhuac Mayab" class="h-20 sm:h-24" onerror="this.onerror=null; this.src='https://placehold.co/150x150';">
+            </div>
+        </header>
+
+        <main>
+            <!-- Sección de Información General -->
+            <section class="bg-white rounded-xl shadow-md p-6 mb-6">
+                <h1 class="text-3xl font-extrabold text-gray-900 mb-6 border-b-2 border-orange-500 pb-3">Información General</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h2 class="text-lg font-semibold text-orange-600">Nombre de la Asignatura:</h2>
+                        <p class="text-xl">Simulación de Sistemas</p>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-orange-600">Nombre del Docente:</h2>
+                        <p class="text-xl">Dr. Victor Cruz Morales</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h2 class="text-lg font-semibold text-orange-600">Resultado de Aprendizaje:</h2>
+                        <p>Entender los diferentes modelos de simulación, ventajas y limitaciones.</p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <h2 class="text-lg font-semibold text-orange-600">Criterios de Evaluación Globales:</h2>
+                         <ul class="list-disc list-inside mt-2 space-y-1">
+                            <li><strong class="text-orange-600">Primer Parcial :</strong> 30%</li>
+                            <li><strong class="text-orange-600">Segundo Parcial :</strong> 30%</li>
+                            <li><strong class="text-orange-600">Examen Ordinario :</strong> 25%</li>
+                            <li><strong class="text-orange-600">Tareas :</strong> 15%</li>
+                             
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Acordeones -->
+            <div class="space-y-4">
+                
+                <!-- Acordeón 1: Perfil del Alumno -->
+                <div class="bg-white rounded-xl shadow-md" id="perfil">
+                    <button @click="openSection = openSection === 'perfil' ? '' : 'perfil'" class="w-full flex justify-between items-center p-5 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Perfil del Alumno y Detalles del Curso</h2>
+                        <svg class="w-6 h-6 transform transition-transform duration-300" :class="{'rotate-180': openSection === 'perfil'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openSection === 'perfil'" class="accordion-content p-5 pt-0" x-cloak x-transition>
+                        <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0"><svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18H5.975c-.621 0-1.175-.255-1.575-.688S3.75 16.279 3.75 15.6V8.4c0-.679.255-1.275.688-1.688S5.354 6 5.975 6H18.025c.621 0 1.175.255 1.575.688.4.412.65 1.008.65 1.688v2.25M12.5 17.5h7.5m-3.75-3.75v7.5"></path></svg></div>
+                                <div><h3 class="font-semibold">Carrera</h3><p>Ingeniería Industrial para la Direccion</p></div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0"><svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
+                                <div><h3 class="font-semibold">Competencias a desarrollar</h3>
+                                  <p>Modelado y simulación de procesos industriales y comerciales.</p></div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0"><svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>
+                                <div><h3 class="font-semibold">Fecha de Inicio y Fin</h3><p>Junio 2025 - Julio 2025</p></div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0"><svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg></div>
+                                <div><h3 class="font-semibold">Número de alumnos : </h3><p>18</p></div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                 <div class="flex-shrink-0"><svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                <div><h3 class="font-semibold">Total de Sesiones : </h3><p>30</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acordeón 2: Aspectos por Evaluar -->
+                <div class="bg-white rounded-xl shadow-md" id="evaluacion" x-data="{ subTab: 'parcial1' }">
+                    <button @click="openSection = openSection === 'evaluacion' ? '' : 'evaluacion'" class="w-full flex justify-between items-center p-5 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Mis Aspectos por Evaluar</h2>
+                         <svg class="w-6 h-6 transform transition-transform duration-300" :class="{'rotate-180': openSection === 'evaluacion'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openSection === 'evaluacion'" class="accordion-content p-5 pt-0" x-cloak x-transition>
+                        <div class="border-t pt-4">
+                            <!-- Pestañas para parciales -->
+                            <div class="flex border-b mb-4">
+                                <button @click="subTab = 'parcial1'" :class="{'border-orange-500 text-orange-600': subTab === 'parcial1', 'border-transparent text-gray-500 hover:text-gray-700': subTab !== 'parcial1'}" class="py-2 px-4 border-b-2 font-medium">Primer Parcial</button>
+                                <button @click="subTab = 'parcial2'" :class="{'border-orange-500 text-orange-600': subTab === 'parcial2', 'border-transparent text-gray-500 hover:text-gray-700': subTab !== 'parcial2'}" class="py-2 px-4 border-b-2 font-medium">Segundo Parcial</button>
+                                <button @click="subTab = 'ordinario'" :class="{'border-orange-500 text-orange-600': subTab === 'ordinario', 'border-transparent text-gray-500 hover:text-gray-700': subTab !== 'ordinario'}" class="py-2 px-4 border-b-2 font-medium">Ordinario</button>
+                            </div>
+                            <!-- Contenido de las pestañas -->
+                            <div x-show="subTab === 'parcial1'" class="space-y-4">
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-bold text-lg">Actividad de Biblioteca y Resumen</h4>
+                                    <p><span class="font-semibold">Descripción:</span> Resumir en una presentación el tema 1.5 del Libro "Simulación de evento discreto".</p>
+                                    <p><span class="font-semibold">Porcentaje:</span> Parte del 60% de parciales.</p>
+                                </div>
+                            </div>
+                             <div x-show="subTab === 'parcial2'" class="space-y-4">
+                                <p class="text-gray-500">Los criterios específicos para el segundo parcial se detallarán más adelante.</p>
+                            </div>
+                            <div x-show="subTab === 'ordinario'" class="space-y-4">
+                               <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-bold text-lg">Proyecto Final</h4>
+                                    <p><span class="font-semibold">Descripción:</span> Proyecto aplicativo de simulación de un proceso industrial o comercial empleando SIMIO.</p>
+                                    <p><span class="font-semibold">Porcentaje:</span> 20%</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <h4 class="font-bold text-lg">Tareas y Capacitación</h4>
+                                     <p><span class="font-semibold">Descripción:</span> Incluye tareas, ejercicios de clase y la entrega del certificado de Coursera.</p>
+                                     <p><span class="font-semibold">Porcentaje:</span> Tareas (10%) + Coursera (10%) = 20%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acordeón 3: Sesiones -->
+                <div class="bg-white rounded-xl shadow-md" id="sesiones">
+                    <button @click="openSection = openSection === 'sesiones' ? '' : 'sesiones'" class="w-full flex justify-between items-center p-5 text-left">
+                        <h2 class="text-2xl font-bold text-gray-800">Mis Sesiones</h2>
+                         <svg class="w-6 h-6 transform transition-transform duration-300" :class="{'rotate-180': openSection === 'sesiones'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="openSection === 'sesiones'" class="accordion-content p-5 pt-0" x-cloak x-transition>
+                        <div class="border-t pt-4 space-y-3">
+                           
+                            <!-- Sesión 1 -->
+                            <div x-data="{ open: false }" class="bg-gray-50 rounded-lg">
+                                <button @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-semibold">
+                                    <span>Sesión 1: Introducción al curso</span>
+                                    <svg class="w-5 h-5 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div x-show="open" class="p-4 pt-0">
+                                    <div class="border-t pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                                        <p><strong class="font-semibold text-orange-600">Tema:</strong> Introducción</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Resultado de aprendizaje:</strong> Presentación del curso y criterios de aprendizaje y calificación.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Estrategias de enseñanza:</strong> Demostración, Lluvia de ideas, Debate.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Actividades (ADA):</strong> Sesión de preguntas y respuestas sobre los pormenores del curso, presentación por parte del profesor y los alumnos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fin Sesión 1 -->
+
+                            <!-- Sesiones 2-3 -->
+                            <div x-data="{ open: false }" class="bg-gray-50 rounded-lg">
+                                <button @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-semibold">
+                                    <span>Sesiones 2-3: Conceptos Fundamentales de Simulación</span>
+                                    <svg class="w-5 h-5 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div x-show="open" class="p-4 pt-0" x-cloak>
+                                     <div class="border-t pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                                        <p><strong class="font-semibold text-orange-600">Tema:</strong> Unidad 1: Introducción a la simulación.</p>
+                                        <p><strong class="font-semibold text-orange-600">Subtemas:</strong> 1.1 Definiciones, 1.2 Aplicaciones.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Resultado de aprendizaje:</strong> Entender los diferentes modelos de simulación, ventajas y limitaciones.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Estrategias de enseñanza:</strong> Ejercicios, Mapa conceptual, Videos, Tutoriales.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Actividades (ADA):</strong> Presentación en Canva.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fin Sesiones 2-3 -->
+
+                            <!-- Sesiones Siguientes -->
+                             <div x-data="{ open: false }" class="bg-gray-50 rounded-lg">
+                                <button @click="open = !open" class="w-full flex justify-between items-center p-4 text-left font-semibold">
+                                    <span>Sesiones Posteriores: Metodología y Alcance</span>
+                                    <svg class="w-5 h-5 transform transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div x-show="open" class="p-4 pt-0" x-cloak>
+                                     <div class="border-t pt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                                        <p><strong class="font-semibold text-orange-600">Tema:</strong> Unidad 1: Introducción a la simulación.</p>
+                                        <p><strong class="font-semibold text-orange-600">Subtemas:</strong> 1.3 Metodología para la construcción de un proyecto de simulación, 1.4 Alcance de un modelo de simulación.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Resultado de aprendizaje:</strong> Entender los diferentes modelos de simulación, ventajas y limitaciones.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Estrategias de enseñanza:</strong> Uso de Copilot, inteligencia artificial para conceptos clave de la materia.</p>
+                                        <p class="sm:col-span-2"><strong class="font-semibold text-orange-600">Actividades (ADA):</strong> Actividad de Biblioteca: resumir en una presentación tema 1.5 del Libro Simulación de evento discreto.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fin Sesiones Siguientes -->
+                            
+                            <div class="text-center text-gray-500 py-4">
+                                El resto de las 36 sesiones se detallarán progresivamente.
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        
+        <!-- Pie de Página -->
+        <footer class="text-center mt-12 py-6 border-t">
+            <p class="text-gray-500">&copy; 2024-2025 Universidad Anáhuac Mayab. Todos los derechos reservados.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
