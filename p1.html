@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Parcial Métodos Numéricos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2980b9;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        .student-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .student-info input {
+            border: none;
+            border-bottom: 2px solid #3498db;
+            background: transparent;
+            padding: 5px;
+            margin: 0 10px;
+            width: 200px;
+            font-size: 16px;
+        }
+        .data-section {
+            background-color: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        .equation {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .problem-section {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+        }
+        .exercise {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #dee2e6;
+        }
+        .exercise-title {
+            color: #495057;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+        }
+        th, td {
+            border: 2px solid #dee2e6;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .important {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 5px solid #dc3545;
+        }
+        .suggestion {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 5px solid #28a745;
+        }
+        .answer-box {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 2px dashed #6c757d;
+        }
+        .final-instructions {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 2px solid #0066cc;
+            text-align: center;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f1f3f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Primer Parcial Métodos Numéricos</h1>
+        
+        <div class="student-info">
+            <strong>NOMBRE DEL ALUMNO:</strong>
+            <input type="text" placeholder="Escribe tu nombre completo aquí">
+        </div>
+
+        <div class="problem-section">
+            <h2>🔬 Problema de Ingeniería Química</h2>
+            <p>Vamos a resolver un problema usando el <span class="highlight">método de bisección</span> para encontrar el <strong>volumen molar del CO₂</strong> mediante la <strong>ecuación de Van der Waals</strong>.</p>
+        </div>
+
+        <div class="data-section">
+            <h2>📊 Datos Proporcionados</h2>
+            <ul>
+                <li><strong>a</strong> = 3.658 L²·atm/mol²</li>
+                <li><strong>b</strong> = 0.04267 L/mol</li>
+                <li><strong>R</strong> = 0.08206 L·atm/(mol·K)</li>
+                <li><strong>T</strong> = 300 K</li>
+                <li><strong>P</strong> = 10 atm</li>
+            </ul>
+        </div>
+
+        <div class="equation">
+            La ecuación de Van der Waals: (P + a/V²)(V - b) = RT
+            <a href="https://ibb.co/FLGXF8wH"><img src="https://i.ibb.co/JwXq9r73/Captura-de-pantalla-2025-06-17-001823.png" 
+                alt="Captura-de-pantalla-2025-06-17-001823" border="0"></a>
+        </div>
+
+        <div class="important">
+            <strong>Objetivo:</strong> Usando esta ecuación determinemos <span class="highlight">el volumen molar</span> por el método de <span class="highlight">cambio de signo</span> y el <span class="highlight">método gráfico</span>.
+        </div>
+
+        <div class="suggestion">
+            <strong>Sugerencia:</strong> Reorganizar la ecuación en la forma f(V) = 0 y <strong>SE SUGIERE REORGANIZAR LA ECUACIÓN</strong> como si fuera un <strong>polinomio de grado 3</strong>.
+        </div>
+
+        <div class="exercise">
+            <div class="exercise-title">A. Intervalos de cambio de signo</div>
+            <p><strong>Escribe abajo el o los intervalos de cambio de signo antes y después:</strong></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Escribe la variable</th>
+                        <th>Escribe el valor de la función</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                        <td><input type="text" style="width: 100%; border: 1px solid #ccc; padding: 8px;"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="exercise">
+            <div class="exercise-title">B. Gráfica completa de la función</div>
+            <p>Muestra en tu código la <strong>Gráfica de la función COMPLETA</strong> donde ocurren los cambios de signo. Ajusta los límites para que se observe lo mejor posible <span class="highlight">la función completa</span> y <span class="highlight">los puntos</span> donde ocurre <span class="highlight">el cambio de signo</span>.</p>
+            
+            <div class="answer-box">
+                <p><em>Aquí debes incluir tu código y la gráfica correspondiente</em></p>
+            </div>
+        </div>
+
+        <div class="exercise">
+            <div class="exercise-title">C. Gráfica específica del cambio de signo</div>
+            <p>Muestra en tu código la <strong>Gráfica de la función donde ocurren EXACTAMENTE los cambios de signo</strong>. Ajusta los límites para que <span class="highlight">se observe lo mejor posible el cambio de signo</span>.</p>
+            
+            <div class="answer-box">
+                <p><em>Aquí debes incluir tu código y la gráfica correspondiente</em></p>
+            </div>
+        </div>
+
+        <div class="exercise">
+            <div class="exercise-title">D. Solución gráfica</div>
+            <p>Escribe la solución gráfica <strong>DE ACUERDO CON LA GRÁFICA del inciso C</strong> y el valor de la Función en ese punto:</p>
+            
+            <div class="answer-box">
+                <p style="text-align: center; font-size: 18px;">
+                    <strong>V = </strong><input type="text" style="border: none; border-bottom: 2px solid #333; padding: 5px; width: 150px; font-size: 16px;">
+                    &nbsp;&nbsp;&nbsp;
+                    <strong>f(V) = </strong><input type="text" style="border: none; border-bottom: 2px solid #333; padding: 5px; width: 150px; font-size: 16px;">
+                </p>
+            </div>
+        </div>
+
+        <div class="final-instructions">
+            <h2>📤 Instrucciones de entrega</h2>
+            <p><strong>Sube a Brightspace tu archivo de R Markdown y tu archivo HTML ambos agrupados en un archivo ZIP</strong></p>
+        </div>
+
+        <div style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 8px; text-align: center; color: #6c757d;">
+            <p><em>Recuerda mostrar todos tus cálculos y explicar tu razonamiento paso a paso.</em></p>
+            <p><strong>¡Buena suerte! Dr. Victor Cruz</strong></p>
+        </div>
+
+        
+    </div>
+</body>
+</html>
