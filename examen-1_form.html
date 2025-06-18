@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primer Parcial Métodos Numéricos - Formulario</title>
+    <style>
+        @media print {
+            body {
+                margin: 0;
+                padding: 20px;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            input, textarea {
+                border: 1px solid #000 !important;
+                background-color: #f0f8ff !important;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 850px;
+            background-color: #f5f5f5;
+        }
+        
+        .page {
+            background-color: white;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .nombre-section {
+            background-color: #ecf0f1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .nombre-input {
+            width: 60%;
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+        
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .section-yellow {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+        }
+        
+        .section-blue {
+            background-color: #cfe2ff;
+            border-left: 5px solid #0d6efd;
+        }
+        
+        .section-dark {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .section-pink {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .section-green {
+            background-color: #d1e7dd;
+            border-left: 5px solid #198754;
+        }
+        
+        .equation-box {
+            background-color: white;
+            padding: 20px;
+            margin: 15px auto;
+            text-align: center;
+            font-size: 18px;
+            border-radius: 5px;
+            max-width: 500px;
+        }
+        
+        .data-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .data-list li {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        
+        .table-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f0f8ff;
+        }
+        
+        .code-area {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px dashed #7f8c8d;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            background-color: #f8f9fa;
+            margin: 20px 0;
+            resize: vertical;
+        }
+        
+        .solution-box {
+            border: 2px dashed #7f8c8d;
+            padding: 20px;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        
+        .solution-input {
+            width: 200px;
+            padding: 10px;
+            margin: 0 10px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            font-size: 16px;
+            text-align: center;
+            background-color: #fff;
+        }
+        
+        .instructions {
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            font-size: 24px;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+        .print-button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .print-button:hover {
+            background-color: #2980b9;
+        }
+
+        @media screen {
+            .print-info {
+                background-color: #fff3cd;
+                border: 1px solid #ffc107;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 5px;
+                text-align: center;
+            }
+        }
+
+        @media print {
+            .print-info, .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-info">
+        <p><strong>Instrucciones:</strong> Complete todos los campos del formulario y luego haga clic en "Imprimir como PDF" para guardar el documento con sus respuestas.</p>
+    </div>
+    
+    <button class="print-button" onclick="window.print()">Imprimir como PDF</button>
+
+    <div class="page">
+        <h1>Primer Parcial Métodos Numéricos</h1>
+        
+        <div class="nombre-section">
+            <label><strong>NOMBRE DEL ALUMNO:</strong></label>
+            <input type="text" class="nombre-input" placeholder="Escribe tu nombre completo">
+        </div>
+        
+        <div class="section section-yellow">
+            <h2><span class="icon">🔬</span> Problema de Ingeniería Química</h2>
+            <p>Vamos a resolver un problema usando el <strong>método de bisección</strong> para encontrar el <strong>volumen molar del CO₂</strong> mediante la <strong>ecuación de Van der Waals</strong>.</p>
+        </div>
+        
+        <div class="section section-blue">
+            <h2><span class="icon">📊</span> Datos Proporcionados</h2>
+            <ul class="data-list">
+                <li><strong>a</strong> = 3.658 L²·atm/mol²</li>
+                <li><strong>b</strong> = 0.04267 L/mol</li>
+                <li><strong>R</strong> = 0.08206 L·atm/(mol·K)</li>
+                <li><strong>T</strong> = 300 K</li>
+                <li><strong>P</strong> = 10 atm</li>
+            </ul>
+        </div>
+        
+        <div class="section section-dark">
+            <h3 style="color: white;">La ecuación de Van der Waals: (P + a/V²)(V - b) = RT</h3>
+            <div class="equation-box">
+                <p>En ingeniería química, la ecuación de Van der Waals describe el comportamiento de gases reales:</p>
+                <p style="font-size: 20px; font-weight: bold;">(P + a/V²)(V - b) = RT</p>
+            </div>
+        </div>
+        
+        <div class="section section-pink">
+            <p><strong>Objetivo:</strong> Usando esta ecuación determinemos el <strong>volumen molar</strong> por el método de <strong>cambio de signo</strong> y el <strong>método gráfico</strong>.</p>
+        </div>
+        
+        <div class="section section-green">
+            <p><strong>Sugerencia:</strong> Reorganizar la ecuación en la forma f(V) = 0 y <strong>SE SUGIERE REORGANIZAR LA ECUACIÓN como si fuera un polinomio de grado 3</strong>.</p>
+        </div>
+    </div>
+
+    <div class="page page-break">
+        <h2>A. Intervalos de cambio de signo</h2>
+        <p>Escribe abajo el o los intervalos de cambio de signo antes y después:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Escribe la variable</th>
+                    <th>Escribe el valor de la función</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+                <tr>
+                    <td><input type="text" class="table-input" placeholder="V = ..."></td>
+                    <td><input type="text" class="table-input" placeholder="f(V) = ..."></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>B. Gráfica completa de la función</h2>
+        <p>Muestra en tu código la <strong>Gráfica de la función COMPLETA</strong> donde ocurren los cambios de signo. Ajusta los límites para que se observe lo mejor posible <strong>la función completa</strong> y <strong>los puntos</strong> donde ocurre <strong>el cambio de signo</strong>.</p>
+        
+        <textarea class="code-area" placeholder="Aquí debes incluir tu código y la gráfica correspondiente
+
+# Ejemplo de estructura:
+# 1. Código R para generar la función
+# 2. Código para crear la gráfica
+# 3. Descripción de los resultados"></textarea>
+        
+        <h2>C. Gráfica específica del cambio de signo</h2>
+        <p>Muestra en tu código la <strong>Gráfica de la función donde ocurren EXACTAMENTE los cambios de signo</strong>. Ajusta los límites para que <strong>se observe lo mejor posible el cambio de signo</strong>.</p>
+        
+        <textarea class="code-area" placeholder="Aquí debes incluir tu código y la gráfica correspondiente
+
+# Ejemplo de estructura:
+# 1. Código R para zoom en la región de interés
+# 2. Código para crear la gráfica detallada
+# 3. Análisis del punto de cruce"></textarea>
+    </div>
+
+    <div class="page">
+        <h2>D. Solución gráfica</h2>
+        <p>Escribe la solución gráfica <strong>DE ACUERDO CON LA GRÁFICA</strong> del inciso C y el valor de la Función en ese punto:</p>
+        
+        <div class="solution-box">
+            <label><strong>V =</strong></label>
+            <input type="text" class="solution-input" placeholder="Valor de V">
+            <label><strong>f(V) =</strong></label>
+            <input type="text" class="solution-input" placeholder="Valor de f(V)">
+        </div>
+        
+        <div class="instructions">
+            <h2><span class="icon">📤</span> Instrucciones de entrega</h2>
+            <p><strong>Sube a Brightspace tu archivo de R Markdown y tu archivo HTML ambos agrupados en un archivo ZIP</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p><em>Recuerda mostrar todos tus cálculos y explicar tu razonamiento paso a paso.</em></p>
+            <p><strong>¡Buena suerte! Dr. Victor Cruz</strong></p>
+        </div>
+    </div>
+</body>
+</html>
